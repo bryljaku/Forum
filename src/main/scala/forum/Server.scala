@@ -9,7 +9,7 @@ import com.typesafe.config.ConfigFactory
 
 object Forum extends Routes {
     def main(args: Array[String]) {
-    implicit val system = ActorSystem("Marshaller")
+    implicit val system = ActorSystem("ForumSystem")
     implicit val materializer = ActorMaterializer()
     import system.dispatcher
 

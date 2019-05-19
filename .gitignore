@@ -1,2 +1,11 @@
 *.class
 *.log
+
+.classpath
+.project
+.settings/
+/target/**
+/.class
+
+target/streams/compile/compile/$global/streams/out
+target/streams/compile/compileIncremental/$global/streams/out
