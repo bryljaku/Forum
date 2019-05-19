@@ -1,0 +1,57 @@
+[0m[[0m[31merror[0m] [0m[0mC:\Users\shino\Desktop\GitHub\Forum\src\main\scala\forum\DatabaseScheme.scala:16:87: type mismatch;[0m
+[0m[[0m[31merror[0m] [0m[0m found   : ((Int, String, String, String, Int, java.sql.Timestamp)) => forum.Topic[0m
+[0m[[0m[31merror[0m] [0m[0m required: ((Option[Int], String, String, String, Int, java.sql.Timestamp)) => ?[0m
+[0m[[0m[31merror[0m] [0m[0m    def * = (id.?, nickname, topic, content, secret,lastActivity) <> ((Topic.apply _).tupled, Topic.unapply)[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                                      ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\Users\shino\Desktop\GitHub\Forum\src\main\scala\forum\DatabaseScheme.scala:16:101: type mismatch;[0m
+[0m[[0m[31merror[0m] [0m[0m found   : Option[(Int, String, String, String, Int, java.sql.Timestamp)][0m
+[0m[[0m[31merror[0m] [0m[0m required: Option[(Option[Int], String, String, String, Int, java.sql.Timestamp)][0m
+[0m[[0m[31merror[0m] [0m[0m    def * = (id.?, nickname, topic, content, secret,lastActivity) <> ((Topic.apply _).tupled, Topic.unapply)[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                                                    ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\Users\shino\Desktop\GitHub\Forum\src\main\scala\forum\DatabaseScheme.scala:27:88: type mismatch;[0m
+[0m[[0m[31merror[0m] [0m[0m found   : ((Int, String, Int, String, Int, java.sql.Timestamp)) => forum.Answer[0m
+[0m[[0m[31merror[0m] [0m[0m required: ((Option[Int], String, Int, String, Int, java.sql.Timestamp)) => ?[0m
+[0m[[0m[31merror[0m] [0m[0m    def * = (id.?, nickname, topicID, content, secret, createdOn) <> ((Answer.apply _).tupled, Answer.unapply)[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                                       ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\Users\shino\Desktop\GitHub\Forum\src\main\scala\forum\DatabaseScheme.scala:27:103: type mismatch;[0m
+[0m[[0m[31merror[0m] [0m[0m found   : Option[(Int, String, Int, String, Int, java.sql.Timestamp)][0m
+[0m[[0m[31merror[0m] [0m[0m required: Option[(Option[Int], String, Int, String, Int, java.sql.Timestamp)][0m
+[0m[[0m[31merror[0m] [0m[0m    def * = (id.?, nickname, topicID, content, secret, createdOn) <> ((Answer.apply _).tupled, Answer.unapply)[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                                                      ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\Users\shino\Desktop\GitHub\Forum\src\main\scala\forum\Protocols.scala:10:43: could not find implicit value for evidence parameter of type ForumJsonProtocol.this.JF[java.sql.Timestamp][0m
+[0m[[0m[31merror[0m] [0m[0m    implicit val topicFormat = jsonFormat6(Topic)[0m
+[0m[[0m[31merror[0m] [0m[0m                                          ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\Users\shino\Desktop\GitHub\Forum\src\main\scala\forum\Protocols.scala:11:44: could not find implicit value for evidence parameter of type ForumJsonProtocol.this.JF[java.sql.Timestamp][0m
+[0m[[0m[31merror[0m] [0m[0m    implicit val answerFormat = jsonFormat6(Answer)[0m
+[0m[[0m[31merror[0m] [0m[0m                                           ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\Users\shino\Desktop\GitHub\Forum\src\main\scala\forum\Routes.scala:19:36: not found: value db[0m
+[0m[[0m[31merror[0m] [0m[0m                val topicFuture = (db ? GetTopic(topicID)).mapTo[Topic][0m
+[0m[[0m[31merror[0m] [0m[0m                                   ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\Users\shino\Desktop\GitHub\Forum\src\main\scala\forum\Routes.scala:23:26: could not find implicit value for parameter um: akka.http.scaladsl.unmarshalling.FromRequestUnmarshaller[forum.Answer][0m
+[0m[[0m[31merror[0m] [0m[0m                entity(as[Answer]) { answer =>[0m
+[0m[[0m[31merror[0m] [0m[0m                         ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\Users\shino\Desktop\GitHub\Forum\src\main\scala\forum\Routes.scala:24:31: not found: value db[0m
+[0m[[0m[31merror[0m] [0m[0m                    complete((db ? AddAnswer(answer)).map(_ => StatusCodes.OK)) [0m
+[0m[[0m[31merror[0m] [0m[0m                              ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\Users\shino\Desktop\GitHub\Forum\src\main\scala\forum\Routes.scala:28:26: could not find implicit value for parameter um: akka.http.scaladsl.unmarshalling.FromRequestUnmarshaller[forum.Answer][0m
+[0m[[0m[31merror[0m] [0m[0m                entity(as[Answer]) { answer =>[0m
+[0m[[0m[31merror[0m] [0m[0m                         ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\Users\shino\Desktop\GitHub\Forum\src\main\scala\forum\Routes.scala:29:31: not found: value db[0m
+[0m[[0m[31merror[0m] [0m[0m                    complete((db ? DeleteAnswer(answer)).map(_ => StatusCodes.OK)) [0m
+[0m[[0m[31merror[0m] [0m[0m                              ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\Users\shino\Desktop\GitHub\Forum\src\main\scala\forum\Routes.scala:35:37: not found: value db[0m
+[0m[[0m[31merror[0m] [0m[0m                val topicsFuture = (db ? GetAllTopics).mapTo[List[Topic]][0m
+[0m[[0m[31merror[0m] [0m[0m                                    ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\Users\shino\Desktop\GitHub\Forum\src\main\scala\forum\Routes.scala:39:26: could not find implicit value for parameter um: akka.http.scaladsl.unmarshalling.FromRequestUnmarshaller[forum.Topic][0m
+[0m[[0m[31merror[0m] [0m[0m                entity(as[Topic]) { topic =>[0m
+[0m[[0m[31merror[0m] [0m[0m                         ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\Users\shino\Desktop\GitHub\Forum\src\main\scala\forum\Routes.scala:40:31: not found: value db[0m
+[0m[[0m[31merror[0m] [0m[0m                    complete((db ? AddTopic(topic)).map(_ => StatusCodes.OK)) [0m
+[0m[[0m[31merror[0m] [0m[0m                              ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\Users\shino\Desktop\GitHub\Forum\src\main\scala\forum\Routes.scala:44:26: could not find implicit value for parameter um: akka.http.scaladsl.unmarshalling.FromRequestUnmarshaller[forum.Topic][0m
+[0m[[0m[31merror[0m] [0m[0m                entity(as[Topic]) { topic =>[0m
+[0m[[0m[31merror[0m] [0m[0m                         ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\Users\shino\Desktop\GitHub\Forum\src\main\scala\forum\Routes.scala:45:31: not found: value db[0m
+[0m[[0m[31merror[0m] [0m[0m                    complete((db ? DeleteTopic(topic)).map(_ => StatusCodes.OK)) [0m
+[0m[[0m[31merror[0m] [0m[0m                              ^[0m
+[0m[[0m[31merror[0m] [0m[0m16 errors found[0m
