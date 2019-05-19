@@ -1,17 +1,10 @@
 package forum
 
-import akka.actor.{Actor, ActorLogging, ActorSystem, Props}
+import akka.actor.{Actor, ActorSystem}
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCodes}
 import akka.stream.ActorMaterializer
-import akka.http.scaladsl.server.Directives._
-import akka.http.scaladsl.unmarshalling.FromRequestUnmarshaller
-import akka.pattern.ask
-import spray.json._
-import scala.util.{Failure, Success}
 import scala.io.StdIn.readLine 
-import scala.concurrent.{ Await, ExecutionContext, Future }
-
+import com.typesafe.config.ConfigFactory
 
 
 object Forum extends Routes {
@@ -20,10 +13,12 @@ object Forum extends Routes {
     implicit val materializer = ActorMaterializer()
     import system.dispatcher
 
+    val interface = ConfigFactory.load().getString("app.interface")
+    val port = ConfigFactory.load().getString("app.port").toInt
     val serverBinding =
-    Http().bindAndHandle(route, "localhost", 8080)
+    Http().bindAndHandle(route, interface, port)
     
-    println(s"Server online at http://localhost:8080/\n")
+    println(s"Server online at http://$interface:$port/\n")
 
     readLine() 
 

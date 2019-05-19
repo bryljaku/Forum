@@ -18,10 +18,10 @@
 [0m[[0m[31merror[0m] [0m[0m required: Option[(Option[Int], String, Int, String, Int, java.sql.Timestamp)][0m
 [0m[[0m[31merror[0m] [0m[0m    def * = (id.?, nickname, topicID, content, secret, createdOn) <> ((Answer.apply _).tupled, Answer.unapply)[0m
 [0m[[0m[31merror[0m] [0m[0m                                                                                                      ^[0m
-[0m[[0m[31merror[0m] [0m[0mC:\Users\shino\Desktop\GitHub\Forum\src\main\scala\forum\Protocols.scala:10:43: could not find implicit value for evidence parameter of type ForumJsonProtocol.this.JF[java.sql.Timestamp][0m
+[0m[[0m[31merror[0m] [0m[0mC:\Users\shino\Desktop\GitHub\Forum\src\main\scala\forum\Protocols.scala:12:43: could not find implicit value for evidence parameter of type ForumJsonProtocol.this.JF[java.sql.Timestamp][0m
 [0m[[0m[31merror[0m] [0m[0m    implicit val topicFormat = jsonFormat6(Topic)[0m
 [0m[[0m[31merror[0m] [0m[0m                                          ^[0m
-[0m[[0m[31merror[0m] [0m[0mC:\Users\shino\Desktop\GitHub\Forum\src\main\scala\forum\Protocols.scala:11:44: could not find implicit value for evidence parameter of type ForumJsonProtocol.this.JF[java.sql.Timestamp][0m
+[0m[[0m[31merror[0m] [0m[0mC:\Users\shino\Desktop\GitHub\Forum\src\main\scala\forum\Protocols.scala:13:44: could not find implicit value for evidence parameter of type ForumJsonProtocol.this.JF[java.sql.Timestamp][0m
 [0m[[0m[31merror[0m] [0m[0m    implicit val answerFormat = jsonFormat6(Answer)[0m
 [0m[[0m[31merror[0m] [0m[0m                                           ^[0m
 [0m[[0m[31merror[0m] [0m[0mC:\Users\shino\Desktop\GitHub\Forum\src\main\scala\forum\Routes.scala:19:36: not found: value db[0m
