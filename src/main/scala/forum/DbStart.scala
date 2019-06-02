@@ -17,7 +17,8 @@ import scala.util. {
   Failure,
   Success
 }
-object DbStart extends DbBase with Protocols {
+object DbStart extends DbScheme {
+    val db: Database = Database.forConfig("mydb")
 
   def addTopics: Seq[Topic] =
     for (i <- 0 to 10) 
@@ -36,7 +37,7 @@ object DbStart extends DbBase with Protocols {
     Await.result(dropFuture, Duration.Inf).andThen {
       case Success(_) => doSomething
       case Failure(_) => {
-        println('s')
+        println("dropFailure")
         doSomething
       }
     }
@@ -49,8 +50,6 @@ object DbStart extends DbBase with Protocols {
     val setupFuture = Future {
     existing.flatMap( v => {
       val names = v.map(mt => mt.name.name)
-        println("tworze tabelki")
-
       val createIfNotExist = tables.filter( table =>
         (!names.contains(table.baseTableRow.tableName))).map(_.schema.create)
       db.run(DBIO.sequence(createIfNotExist))
@@ -67,13 +66,12 @@ object DbStart extends DbBase with Protocols {
         db.run(DBIO.seq(answersTable ++= addAnswers))
     }
     Await.result(queryFuture, Duration.Inf).andThen {
-      case Success(_) => println("hehehe")
+      case Success(_) => println("querySuccess")
       case Failure(err) => println(err);
       println("Oh Noes!")
     }
   }
   def startDB: Unit = {
-    //dropDB
-    ()
+    dropDB
   }
 }
