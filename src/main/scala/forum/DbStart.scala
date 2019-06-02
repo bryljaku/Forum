@@ -10,6 +10,7 @@ import scala.concurrent. {
   Future,
   Await
 }
+import slick.jdbc.meta.MTable
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 import scala.util. {
@@ -17,8 +18,6 @@ import scala.util. {
   Success
 }
 object DbStart extends DbBase with Protocols {
-
-
 
   lazy val dropCmd = DBIO.seq(topicsTable.schema.drop, answersTable.schema.drop)
   lazy val setup = DBIO.seq(topicsTable.schema.create, answersTable.schema.create, topicsTable ++= addTopics, answersTable ++= addAnswers)
@@ -35,29 +34,43 @@ object DbStart extends DbBase with Protocols {
   def dropDB = {
 
     val dropFuture = Future {
+      println("to ja")
       db.run(dropCmd)
     }
     Await.result(dropFuture, Duration.Inf).andThen {
       case Success(_) => doSomething
-      case Failure(_) => doSomething
+      case Failure(_) => {
+        println('s')
+        doSomething
+      }
     }
 
   }
   def doSomething = {
+      val existing = db.run(MTable.getTables)
+  val tables = List(topicsTable, answersTable) 
+
     val setupFuture = Future {
-      db.run(setup)
+    existing.flatMap( v => {
+      val names = v.map(mt => mt.name.name)
+        println("tworze tabelki")
+
+      val createIfNotExist = tables.filter( table =>
+        (!names.contains(table.baseTableRow.tableName))).map(_.schema.create)
+      db.run(DBIO.sequence(createIfNotExist))
+      })
     }
     Await.result(setupFuture, Duration.Inf).andThen {
       case Success(_) => runQuery
       case Failure(err) => println(err);
     }
-
     println("Seeya!")
   }
   def runQuery = {
     val queryFuture = Future {
-      db.run(topicsTable.result).map(_.foreach {
+      db.run(answersTable.result).map(_.foreach {
         case x: Topic => println(s"${x}")
+        case y: Answer => println(y)
       })
     }
     Await.result(queryFuture, Duration.Inf).andThen {
@@ -70,6 +83,5 @@ object DbStart extends DbBase with Protocols {
 
   def startDB: Unit = {
     dropDB
-    doSomething
   }
 }
