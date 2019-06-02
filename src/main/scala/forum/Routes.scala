@@ -6,15 +6,11 @@ import com.typesafe.config.ConfigFactory
 
 import scala.language.postfixOps
 
-
-
-import java.sql.Timestamp
-import java.util.Date
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import spray.json._
 import scala.language.implicitConversions
 
-class Routes extends DbOperations {
+class Routes extends DbOperations with Protocols {
   val LIMIT = ConfigFactory.load().getInt("page.limit")
   val route =
     pathPrefix("topics") {
