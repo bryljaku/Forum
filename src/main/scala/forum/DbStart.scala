@@ -19,23 +19,19 @@ import scala.util. {
 }
 object DbStart extends DbBase with Protocols {
 
-  lazy val dropCmd = DBIO.seq(topicsTable.schema.drop, answersTable.schema.drop)
-  lazy val setup = DBIO.seq(topicsTable.schema.create, answersTable.schema.create, topicsTable ++= addTopics, answersTable ++= addAnswers)
-
   def addTopics: Seq[Topic] =
     for (i <- 0 to 10) 
      yield Topic(None, "jakisnick" + i, "Tooopic", "topicc", new Timestamp(nextInt), i toInt)
 
   def addAnswers: Seq[Answer] =
     for (i <- 1 to 30)
-     yield Answer(None, "jakismail" + i + "@e.o", floor(i / 3) toInt, "answerstawe", new Timestamp(nextInt), i toInt)
+     yield Answer(None, "jakismail" + i + "@e.o", floor(i / 3 + 1) toInt, "answerstawe", new Timestamp(nextInt), i toInt)
 
 
   def dropDB = {
-
     val dropFuture = Future {
       println("to ja")
-      db.run(dropCmd)
+      db.run(DBIO.seq(topicsTable.schema.drop))
     }
     Await.result(dropFuture, Duration.Inf).andThen {
       case Success(_) => doSomething
@@ -48,7 +44,7 @@ object DbStart extends DbBase with Protocols {
   }
   def doSomething = {
       val existing = db.run(MTable.getTables)
-  val tables = List(topicsTable, answersTable) 
+      val tables = List(topicsTable, answersTable) 
 
     val setupFuture = Future {
     existing.flatMap( v => {
@@ -68,20 +64,16 @@ object DbStart extends DbBase with Protocols {
   }
   def runQuery = {
     val queryFuture = Future {
-      db.run(answersTable.result).map(_.foreach {
-        case x: Topic => println(s"${x}")
-        case y: Answer => println(y)
-      })
+        db.run(DBIO.seq(answersTable ++= addAnswers))
     }
     Await.result(queryFuture, Duration.Inf).andThen {
-      case Success(_) => db.close()
+      case Success(_) => println("hehehe")
       case Failure(err) => println(err);
       println("Oh Noes!")
     }
   }
-
-
   def startDB: Unit = {
-    dropDB
+    //dropDB
+    ()
   }
 }

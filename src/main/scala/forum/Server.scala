@@ -25,11 +25,10 @@ object Server extends Routes {
 
     println(s"Server online at http://$interface:$port/\n")
     DbStart.startDB
-    println(findTopics(0,15).mapTo[List[Topic]])
     
     readLine()
     
-    db.close
+    db.close()
     serverBinding
       .flatMap(_.unbind())
       .onComplete(_ => system.terminate())

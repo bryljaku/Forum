@@ -4,7 +4,7 @@ import java.sql.Timestamp
 import slick.jdbc.PostgresProfile.api._
 
 trait DbScheme extends Protocols {
-class TopicsTable(tag: Tag) extends Table[Topic](tag, "topic") {
+class TopicsTable(tag: Tag) extends Table[Topic](tag, "topics") {
     def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
     def nickname = column[String]("nickname")
     def topic = column[String]("topic")

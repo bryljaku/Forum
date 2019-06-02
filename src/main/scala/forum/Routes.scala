@@ -19,6 +19,12 @@ class Routes extends DbOperations {
   val route =
     pathPrefix("topics") {
       get {
+        (path(IntNumber) | parameters('id.as[Int])) { id =>
+          complete(findTopic(id).map[ToResponseMarshallable] {
+            case Some(t) => "ss"
+            case _ => "cos jestnie tak"
+          })
+        } ~
         (parameters('page.as[Int].?, 'limit.as[Int].?)) { (page, limit) =>
           val p = page match {
             case Some(s) if s >= 0 => s
