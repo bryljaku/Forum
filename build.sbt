@@ -35,11 +35,5 @@ libraryDependencies ++= Seq(
   // kebs
   "pl.iterators" %% "kebs-spray-json" % "1.6.2"
 )
-flywayUrl := "jdbc:postgresql://localhost:5432/forumdb"
-
-flywayUser := "postgres"
-
-flywayPassword := "postgres"
-
 
 scalacOptions ++= Seq("-deprecation", "-feature")
