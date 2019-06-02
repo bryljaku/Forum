@@ -1,51 +1,80 @@
 package forum
-
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCodes}
-import akka.pattern.ask
-import akka.http.scaladsl.Http
-import Database._
+import akka.http.scaladsl.marshalling.ToResponseMarshallable
+import scala.concurrent.ExecutionContext.Implicits.global
 import akka.http.scaladsl.server.Directives._
-import akka.util.Timeout
-import akka.actor.{Actor, ActorLogging, ActorSystem, Props}
-import scala.concurrent.duration._
+import com.typesafe.config.ConfigFactory
+
 import scala.language.postfixOps
 
-trait Routes extends ForumJsonProtocol {
-    implicit val timeout = Timeout(2 seconds)
-    val route = 
+
+
+import java.sql.Timestamp
+import java.util.Date
+import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
+import spray.json._
+import scala.language.implicitConversions
+
+class Routes extends DbOperations {
+  val LIMIT = ConfigFactory.load().getInt("page.limit")
+  val route =
     pathPrefix("topics") {
-        (path(IntNumber) | parameter('id.as[Int])) {topicID =>
-            get {
-                val topicFuture = (db ? GetTopic(topicID)).mapTo[Topic]
-                    complete(topicFuture)
-            } ~
-            post {
-                entity(as[Answer]) { answer =>
-                    complete((db ? AddAnswer(answer)).map(_ => StatusCodes.OK)) 
-                }
-            } ~
-            delete {
-                entity(as[Answer]) { answer =>
-                    complete((db ? DeleteAnswer(answer)).map(_ => StatusCodes.OK)) 
-                }
-            }
-        } ~ 
-        pathEndOrSingleSlash {
-            get {
-                val topicsFuture = (db ? GetAllTopics).mapTo[List[Topic]]
-                complete(topicsFuture)        
-            } ~
-            post {
-                entity(as[Topic]) { topic =>
-                    complete((db ? AddTopic(topic)).map(_ => StatusCodes.OK)) 
-                }
-            } ~
-            delete {
-                entity(as[Topic]) { topic =>
-                    complete((db ? DeleteTopic(topic)).map(_ => StatusCodes.OK)) 
-                }
-            }
+      get {
+        (parameters('page.as[Int].?, 'limit.as[Int].?)) { (page, limit) =>
+          val p = page match {
+            case Some(s) if s >= 0 => s
+            case _ => 0
+          }
+          val l = limit match {
+            case Some(s) if s >= 0 && s < LIMIT => s
+            case _ => LIMIT
+          }
+          complete(findTopics(p, l))
         }
-    }
-}
+      } ~
+      post { 
+          reject
+          // entity(as[TopicInput]) { t =>
+          //   complete(createTopic(t).map[ToResponseMarshallable])
+          }
+        } 
+    //     ~
+    //   put {
+    //     entity(as[UpdateRequest]){ t =>
+    //       complete(updateTopic(t).map[ToResponseMarshallable])
+    //     }
+    //   } ~
+    //   delete {
+    //     entity(as[DeleteRequest]){ t =>
+    //       complete(deleteTopic(t).map[ToResponseMarshallable])
+    //     }
+    //   }
+    // } ~
+    //   pathPrefix("answers") {
+    //   get {
+    //     (path(IntNumber) | parameter('id.as[Int])) { id =>
+    //         complete(findAnswer(id).mapTo[Int])
+    //       }
+    //     }
+    //   } ~
+    //   post { 
+    //       entity(as[AnswerInput]) { a =>
+    //         complete(createTopic(a).map[ToResponseMarshallable])
+    //       }
+    //     } ~
+    //   put {
+    //     entity(as[UpdateRequest]){ a =>
+    //       complete(updateTopic(a).map[ToResponseMarshallable])
+    //     }
+    //   } ~
+    //   delete {
+    //     entity(as[DeleteRequest]){ a =>
+    //       complete(deleteTopic(a).map[ToResponseMarshallable])
+    //     }
+  // }
+} 
+
+
+
+
+
 
