@@ -6,7 +6,7 @@ import scala.concurrent.Future
 import DateTimestampConversion._
 import slick.jdbc.H2Profile.api.Database
 
-class DbOperations extends DbBase with InputHandler {
+class DbOperations extends DbScheme with InputHandler {
 
   private def topicValidation(id: Int, secret: Int) = topicsTable.filter(t => t.id === id && t.secret === secret)
   private def answerValidation(id: Int, secret: Int) = answersTable.filter(a => a.id === id && a.secret === secret)
