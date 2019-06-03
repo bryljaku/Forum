@@ -6,8 +6,11 @@ import DateTimestampConversion._
 import scala.concurrent.Future
 import java.util.Date
 
-class DbOperations extends DbBase with InputHandler {
+class DbOperations extends DbScheme with InputHandler {
 
+  protected implicit def executeFromDb[A](action: SqlAction[A, NoStream, _ <: slick.dbio.Effect]): Future[A] = db.run(action)
+  protected implicit def executeReadStreamFromDb[A](action: FixedSqlStreamingAction[Seq[A], A, _ <: slick.dbio.Effect]): Future[Seq[A]] = db.run(action)
+  
   private def topicValidation(id: Int, secret: Int) = topicsTable.filter(t => t.id === id && t.secret === secret)
   private def answerValidation(id: Int, secret: Int) = answersTable.filter(a => a.id === id && a.secret === secret)
   private def updateTopicActivity(topicId: Int) = topicsTable.filter(_.id === topicId).map(_.lastActivity).update(new Date) // 
