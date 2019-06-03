@@ -6,7 +6,7 @@ import DateTimestampConversion._
 import scala.concurrent.Future
 import java.util.Date
 
-class DbOperations extends DbBase with InputHandler {
+class Service extends DbBase with InputHandler {
   private def topicValidation(id: Int, secret: Int) = topicsTable.filter(t => t.id === id && t.secret === secret)
   private def answerValidation(id: Int, secret: Int) = answersTable.filter(a => a.id === id && a.secret === secret)
   private def updateTopicActivity(topicId: Int) = topicsTable.filter(_.id === topicId).map(_.lastActivity).update(new Date) // 

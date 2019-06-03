@@ -33,7 +33,7 @@ libraryDependencies ++= Seq(
 // jwt
   "com.pauldijou" %% "jwt-spray-json" % "2.1.0",
   // kebs
-  "pl.iterators" %% "kebs-spray-json" % "1.6.2"
+  // "pl.iterators" %% "kebs-spray-json" % "1.6.2",
 )
 
 scalacOptions ++= Seq("-deprecation", "-feature")

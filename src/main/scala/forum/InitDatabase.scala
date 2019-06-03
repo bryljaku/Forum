@@ -14,7 +14,7 @@ import slick.jdbc.meta.MTable
 import java.sql.Timestamp
 import scala.math.floor
 
-object DbStart extends DbBase {
+object InitDatabase extends DbBase {
   def addTopics: Seq[Topic] =
     for (i <- 0 to 10) 
      yield Topic(None, "jakisnick" + i, "Tooopic", "topicc", new Date, i toInt)

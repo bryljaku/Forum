@@ -13,7 +13,6 @@ import slick.driver.PostgresDriver.api._
 
 
 object Server extends Routes with App {
-  // def main(args: Array[String]) {
     implicit val system: ActorSystem = ActorSystem("Forum")
     implicit val materializer: ActorMaterializer = ActorMaterializer()
     import system.dispatcher
@@ -30,5 +29,4 @@ object Server extends Routes with App {
     serverBinding
       .flatMap(_.unbind())
       .onComplete(_ => system.terminate())
-  // }
 }

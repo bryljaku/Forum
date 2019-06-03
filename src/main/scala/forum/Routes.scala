@@ -9,7 +9,7 @@ import com.typesafe.config.ConfigFactory
 import scala.language.postfixOps
 import spray.json._
 
-class Routes extends DbOperations with Protocols {
+class Routes extends Service with Protocols {
   val LIMIT = ConfigFactory.load().getInt("page.limit")
 
   val route =

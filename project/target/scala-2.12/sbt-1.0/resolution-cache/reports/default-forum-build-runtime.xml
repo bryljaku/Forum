@@ -9,32 +9,8 @@
 		extra-sbtVersion="1.0"
 		conf="runtime"
 		confs="compile, runtime, test, provided, optional, compile-internal, runtime-internal, test-internal, plugin, pom, scala-tool"
-		date="20190602235436"/>
+		date="20190603111515"/>
 	<dependencies>
-		<module organisation="io.github.davidmweber" name="flyway-sbt">
-			<revision name="5.0.0-RC2" status="release" pubdate="20180222131230" resolver="sbt-chain" artresolver="sbt-chain" homepage="https://github.com/flyway/flyway-sbt" extra-scalaVersion="2.12" extra-sbtVersion="1.0" downloaded="false" searched="false" default="false" conf="default, compile, runtime, default(compile), master" position="49">
-				<license name="APL2" url="http://www.apache.org/licenses/LICENSE-2.0.txt"/>
-				<metadata-artifact status="no" details="" size="3144" time="0" location="C:\Users\shino\.ivy2\cache\scala_2.12\sbt_1.0\io.github.davidmweber\flyway-sbt\ivy-5.0.0-RC2.xml" searched="false" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/io/github/davidmweber/flyway-sbt_2.12_1.0/5.0.0-RC2/flyway-sbt-5.0.0-RC2.pom"/>
-				<caller organisation="default" name="forum-build" conf="compile, runtime" rev="5.0.0-RC2" rev-constraint-default="5.0.0-RC2" rev-constraint-dynamic="5.0.0-RC2" callerrev="0.1.0-SNAPSHOT" extra-scalaVersion="2.12" extra-sbtVersion="1.0"/>
-				<artifacts>
-					<artifact name="flyway-sbt" type="jar" ext="jar" status="no" details="" size="64976" time="0" location="C:\Users\shino\.ivy2\cache\scala_2.12\sbt_1.0\io.github.davidmweber\flyway-sbt\jars\flyway-sbt-5.0.0-RC2.jar">
-						<origin-location is-local="false" location="https://repo1.maven.org/maven2/io/github/davidmweber/flyway-sbt_2.12_1.0/5.0.0-RC2/flyway-sbt-5.0.0-RC2.jar"/>
-					</artifact>
-				</artifacts>
-			</revision>
-		</module>
-		<module organisation="org.flywaydb" name="flyway-core">
-			<revision name="5.0.7" status="release" pubdate="20180130121213" resolver="sbt-chain" artresolver="sbt-chain" homepage="" downloaded="false" searched="false" default="false" conf="compile, runtime(*), master(compile), runtime, compile(*), master" position="50">
-				<license name="Apache License, Version 2.0" url="https://flywaydb.org/licenses/flyway-community.txt"/>
-				<metadata-artifact status="no" details="" size="9441" time="0" location="C:\Users\shino\.ivy2\cache\org.flywaydb\flyway-core\ivy-5.0.7.xml" searched="false" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/org/flywaydb/flyway-core/5.0.7/flyway-core-5.0.7.pom"/>
-				<caller organisation="io.github.davidmweber" name="flyway-sbt" conf="default, compile, runtime, master" rev="5.0.7" rev-constraint-default="5.0.7" rev-constraint-dynamic="5.0.7" callerrev="5.0.0-RC2"/>
-				<artifacts>
-					<artifact name="flyway-core" type="jar" ext="jar" status="no" details="" size="436434" time="0" location="C:\Users\shino\.ivy2\cache\org.flywaydb\flyway-core\jars\flyway-core-5.0.7.jar">
-						<origin-location is-local="false" location="https://repo1.maven.org/maven2/org/flywaydb/flyway-core/5.0.7/flyway-core-5.0.7.jar"/>
-					</artifact>
-				</artifacts>
-			</revision>
-		</module>
 		<module organisation="org.scala-lang" name="scala-reflect">
 			<revision name="2.12.7" status="release" pubdate="20180927043203" resolver="sbt-chain" artresolver="sbt-chain" homepage="http://www.scala-lang.org/" extra-info.apiURL="http://www.scala-lang.org/api/2.12.7/" downloaded="false" searched="false" default="false" conf="compile, runtime(*), master(compile), runtime, compile(*), master" position="40">
 				<license name="BSD 3-Clause" url="http://www.scala-lang.org/license.html"/>
@@ -48,34 +24,10 @@
 			</revision>
 		</module>
 		<module organisation="org.scala-sbt" name="global-plugins">
-			<revision name="0.0" status="integration" pubdate="20190602235332" resolver="inter-project" artresolver="inter-project" extra-scalaVersion="2.12" extra-sbtVersion="1.0" downloaded="false" searched="false" default="false" conf="compile, default(compile)" position="0">
+			<revision name="0.0" status="integration" pubdate="20190603111512" resolver="inter-project" artresolver="inter-project" extra-scalaVersion="2.12" extra-sbtVersion="1.0" downloaded="false" searched="false" default="false" conf="compile, default(compile)" position="0">
 				<metadata-artifact status="failed" details="" size="0" time="0" searched="false"/>
 				<caller organisation="default" name="forum-build" conf="compile, runtime" rev="0.0" rev-constraint-default="0.0" rev-constraint-dynamic="0.0" callerrev="0.1.0-SNAPSHOT" extra-scalaVersion="2.12" extra-sbtVersion="1.0"/>
 				<artifacts>
-				</artifacts>
-			</revision>
-		</module>
-		<module organisation="org.jetbrains" name="sbt-idea-shell">
-			<revision name="2018.3" status="release" pubdate="20181105210000" resolver="sbt-chain" artresolver="sbt-chain" extra-scalaVersion="2.12" extra-sbtVersion="1.0" downloaded="false" searched="false" default="false" conf="compile, default(compile)" position="48">
-				<license name="Apache-2.0" url="http://www.apache.org/licenses/LICENSE-2.0.html"/>
-				<metadata-artifact status="no" details="" size="2423" time="0" location="C:\Users\shino\.ivy2\cache\scala_2.12\sbt_1.0\org.jetbrains\sbt-idea-shell\ivy-2018.3.xml" searched="false" origin-is-local="false" origin-location="https://repo.scala-sbt.org/scalasbt/sbt-plugin-releases/org.jetbrains/sbt-idea-shell/scala_2.12/sbt_1.0/2018.3/ivys/ivy.xml"/>
-				<caller organisation="org.scala-sbt" name="global-plugins" conf="compile" rev="2018.3" rev-constraint-default="2018.3" rev-constraint-dynamic="2018.3" callerrev="0.0" extra-scalaVersion="2.12" extra-sbtVersion="1.0"/>
-				<artifacts>
-					<artifact name="sbt-idea-shell" type="jar" ext="jar" status="no" details="" size="10705" time="0" location="C:\Users\shino\.ivy2\cache\scala_2.12\sbt_1.0\org.jetbrains\sbt-idea-shell\jars\sbt-idea-shell-2018.3.jar">
-						<origin-location is-local="false" location="https://repo.scala-sbt.org/scalasbt/sbt-plugin-releases/org.jetbrains/sbt-idea-shell/scala_2.12/sbt_1.0/2018.3/jars/sbt-idea-shell.jar"/>
-					</artifact>
-				</artifacts>
-			</revision>
-		</module>
-		<module organisation="org.jetbrains" name="sbt-structure-extractor">
-			<revision name="2018.2.1+4-88400d3f" status="integration" pubdate="20180919230826" resolver="sbt-chain" artresolver="sbt-chain" extra-scalaVersion="2.12" extra-sbtVersion="1.0" downloaded="false" searched="false" default="false" conf="compile, default(compile)" position="47">
-				<license name="Apache-2.0" url="http://www.apache.org/licenses/LICENSE-2.0.html"/>
-				<metadata-artifact status="no" details="" size="2069" time="0" location="C:\Users\shino\.ivy2\cache\scala_2.12\sbt_1.0\org.jetbrains\sbt-structure-extractor\ivy-2018.2.1+4-88400d3f.xml" searched="false" origin-is-local="false" origin-location="https://repo.scala-sbt.org/scalasbt/sbt-plugin-releases/org.jetbrains/sbt-structure-extractor/scala_2.12/sbt_1.0/2018.2.1+4-88400d3f/ivys/ivy.xml"/>
-				<caller organisation="org.scala-sbt" name="global-plugins" conf="compile" rev="2018.2.1+4-88400d3f" rev-constraint-default="2018.2.1+4-88400d3f" rev-constraint-dynamic="2018.2.1+4-88400d3f" callerrev="0.0" extra-scalaVersion="2.12" extra-sbtVersion="1.0"/>
-				<artifacts>
-					<artifact name="sbt-structure-extractor" type="jar" ext="jar" status="no" details="" size="367489" time="0" location="C:\Users\shino\.ivy2\cache\scala_2.12\sbt_1.0\org.jetbrains\sbt-structure-extractor\jars\sbt-structure-extractor-2018.2.1+4-88400d3f.jar">
-						<origin-location is-local="false" location="https://repo.scala-sbt.org/scalasbt/sbt-plugin-releases/org.jetbrains/sbt-structure-extractor/scala_2.12/sbt_1.0/2018.2.1+4-88400d3f/jars/sbt-structure-extractor.jar"/>
-					</artifact>
 				</artifacts>
 			</revision>
 		</module>
@@ -83,7 +35,6 @@
 			<revision name="1.2.0" status="release" pubdate="20190426170749" resolver="sbt-chain" artresolver="sbt-chain" homepage="https://github.com/aiyanbo/sbt-dependency-updates" extra-scalaVersion="2.12" extra-sbtVersion="1.0" downloaded="false" searched="false" default="false" conf="default, compile, runtime, default(compile), master" position="1">
 				<license name="Apache License" url="https://www.apache.org/licenses/"/>
 				<metadata-artifact status="no" details="" size="3900" time="0" location="C:\Users\shino\.ivy2\cache\scala_2.12\sbt_1.0\org.jmotor.sbt\sbt-dependency-updates\ivy-1.2.0.xml" searched="false" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/org/jmotor/sbt/sbt-dependency-updates_2.12_1.0/1.2.0/sbt-dependency-updates-1.2.0.pom"/>
-				<caller organisation="default" name="forum-build" conf="compile, runtime" rev="1.2.0" rev-constraint-default="1.2.0" rev-constraint-dynamic="1.2.0" callerrev="0.1.0-SNAPSHOT" extra-scalaVersion="2.12" extra-sbtVersion="1.0"/>
 				<caller organisation="org.scala-sbt" name="global-plugins" conf="compile" rev="1.2.0" rev-constraint-default="1.2.0" rev-constraint-dynamic="1.2.0" callerrev="0.0" extra-scalaVersion="2.12" extra-sbtVersion="1.0"/>
 				<artifacts>
 					<artifact name="sbt-dependency-updates" type="jar" ext="jar" status="no" details="" size="99403" time="0" location="C:\Users\shino\.ivy2\cache\scala_2.12\sbt_1.0\org.jmotor.sbt\sbt-dependency-updates\jars\sbt-dependency-updates-1.2.0.jar">
