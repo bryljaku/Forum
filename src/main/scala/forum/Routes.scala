@@ -1,21 +1,17 @@
 package forum
+
+import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import akka.http.scaladsl.marshalling.ToResponseMarshallable
 import scala.concurrent.ExecutionContext.Implicits.global
 import akka.http.scaladsl.server.Directives._
-import com.typesafe.config.ConfigFactory
-
-import scala.language.postfixOps
-
-
-
-import java.sql.Timestamp
-import java.util.Date
-import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
-import spray.json._
 import scala.language.implicitConversions
+import com.typesafe.config.ConfigFactory
+import scala.language.postfixOps
+import spray.json._
 
-class Routes extends DbOperations {
+class Routes extends DbOperations with Protocols {
   val LIMIT = ConfigFactory.load().getInt("page.limit")
+
   val route =
     pathPrefix("topics") {
       get {
@@ -40,8 +36,8 @@ class Routes extends DbOperations {
       post { 
           reject
           // entity(as[TopicInput]) { t =>
-          //   complete(createTopic(t).map[ToResponseMarshallable])
-          }
+            // complete(createTopic(t).map[ToResponseMarshallable])
+          // }
         } 
     //     ~
     //   put {
@@ -64,23 +60,18 @@ class Routes extends DbOperations {
     //   } ~
     //   post { 
     //       entity(as[AnswerInput]) { a =>
-    //         complete(createTopic(a).map[ToResponseMarshallable])
+    //         complete(createAnswer(a).map[ToResponseMarshallable])
     //       }
     //     } ~
     //   put {
     //     entity(as[UpdateRequest]){ a =>
-    //       complete(updateTopic(a).map[ToResponseMarshallable])
+    //       complete(updateAnswer(a).map[ToResponseMarshallable])
     //     }
     //   } ~
     //   delete {
     //     entity(as[DeleteRequest]){ a =>
-    //       complete(deleteTopic(a).map[ToResponseMarshallable])
+    //       complete(deleteAnswer(a).map[ToResponseMarshallable])
     //     }
   // }
 } 
-
-
-
-
-
-
+}

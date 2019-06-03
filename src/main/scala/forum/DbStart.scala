@@ -1,35 +1,30 @@
 package forum
 
-import slick.jdbc.H2Profile.api.Database
-import slick.jdbc.PostgresProfile.api._
-import java.sql.Timestamp
-import scala.math.floor
-import scala.util.Random.nextInt
-import scala.language.postfixOps
-import scala.concurrent. {
-  Future,
-  Await
-}
-import slick.jdbc.meta.MTable
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
-import scala.util. {
-  Failure,
-  Success
-}
-object DbStart extends DbScheme {
-    val db: Database = Database.forConfig("mydb")
+import slick.jdbc.H2Profile.api.Database
+import slick.jdbc.PostgresProfile.api._
+import scala.concurrent.{Future, Await}
+import DateTimestampConversion._
+import java.util.Date
+import scala.util.Random.nextInt
+import scala.util.{Failure, Success}
+import scala.language.postfixOps
+import slick.jdbc.meta.MTable
+import java.sql.Timestamp
+import scala.math.floor
 
+object DbStart extends DbBase {
   def addTopics: Seq[Topic] =
     for (i <- 0 to 10) 
-     yield Topic(None, "jakisnick" + i, "Tooopic", "topicc", new Timestamp(nextInt), i toInt)
+     yield Topic(None, "jakisnick" + i, "Tooopic", "topicc", new Date, i toInt)
 
   def addAnswers: Seq[Answer] =
     for (i <- 1 to 30)
-     yield Answer(None, "jakismail" + i + "@e.o", floor(i / 3 + 1) toInt, "answerstawe", new Timestamp(nextInt), i toInt)
+     yield Answer(None, "jakismail" + i + "@e.o", floor(i / 4 + 1) toInt, "answerstawe", new Date, i toInt)
 
 
-  def dropDB = {
+  def startDB = {
     val dropFuture = Future {
       println("to ja")
       db.run(DBIO.seq(topicsTable.schema.drop))
@@ -37,11 +32,10 @@ object DbStart extends DbScheme {
     Await.result(dropFuture, Duration.Inf).andThen {
       case Success(_) => doSomething
       case Failure(_) => {
-        println("dropFailure")
+        println("drop failed")
         doSomething
       }
     }
-
   }
   def doSomething = {
       val existing = db.run(MTable.getTables)
@@ -50,6 +44,8 @@ object DbStart extends DbScheme {
     val setupFuture = Future {
     existing.flatMap( v => {
       val names = v.map(mt => mt.name.name)
+        println("tworze tabelki")
+
       val createIfNotExist = tables.filter( table =>
         (!names.contains(table.baseTableRow.tableName))).map(_.schema.create)
       db.run(DBIO.sequence(createIfNotExist))
@@ -71,7 +67,5 @@ object DbStart extends DbScheme {
       println("Oh Noes!")
     }
   }
-  def startDB: Unit = {
-    dropDB
-  }
+
 }

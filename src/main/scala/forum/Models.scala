@@ -14,6 +14,7 @@ import scala.util.Random
 
   case class UpdateRequest(id: Int, secret: Int, content: String)
   case class DeleteRequest(id: Int, secret: Int)
+  case class Status(status: String)
 
 trait InputHandler {
   def getSecret = 1000 + new Random().nextInt(9000)

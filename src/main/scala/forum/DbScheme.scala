@@ -13,7 +13,8 @@ class TopicsTable(tag: Tag) extends Table[Topic](tag, "topics") {
     def secret = column[Int]("secret")
 
     def * = (id.?, nickname, topic, content, lastActivity, secret) <> ((Topic.apply _).tupled, Topic.unapply)
-    }
+
+}
 class AnswersTable(tag: Tag) extends Table[Answer](tag, "answers") {
     def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
     def nickname = column[String]("nickname")

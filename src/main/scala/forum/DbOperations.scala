@@ -1,15 +1,17 @@
 package forum
 
-import java.util.Date
-import slick.jdbc.PostgresProfile.api._
-import scala.concurrent.Future
-import DateTimestampConversion._
 import slick.jdbc.H2Profile.api.Database
+import slick.jdbc.PostgresProfile.api._
+import DateTimestampConversion._
+import scala.concurrent.Future
+import java.util.Date
 
 class DbOperations extends DbBase with InputHandler {
 
   private def topicValidation(id: Int, secret: Int) = topicsTable.filter(t => t.id === id && t.secret === secret)
   private def answerValidation(id: Int, secret: Int) = answersTable.filter(a => a.id === id && a.secret === secret)
+  private def updateTopicActivity(topicId: Int) = topicsTable.filter(_.id === topicId).map(_.lastActivity).update(new Date) // 
+
 
 
   def findTopics(page: Int, limit: Int): Future[List[Topic]] = topicsTable.to[List].sortBy(_.lastActivity.desc).drop(page * limit).take(limit).result
@@ -30,8 +32,6 @@ class DbOperations extends DbBase with InputHandler {
     answerValidation(request.id, request.secret)
     .map(a => (a.content, a.lastActivity))
     .update((request.content, new Date))
-
-  private def updateTopicActivity(topicId: Int) = topicsTable.filter(_.id === topicId).map(_.lastActivity).update(new Date)
 
   def deleteTopic(request: DeleteRequest): Future[Int] = topicValidation(request.id, request.secret).delete // answers cascade on delete 
   def deleteAnswer(request: DeleteRequest): Future[Int] = answerValidation(request.id, request.secret).delete
