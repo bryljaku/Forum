@@ -3,5 +3,3 @@
     "nickname": "jakisnick5",
     "topic": "Tooopic"
 }
-
-//post http://localhost:8080/topics < src/main/resources/json/topicInput.json
