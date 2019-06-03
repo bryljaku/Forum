@@ -8,8 +8,9 @@ import scala.language.implicitConversions
 import com.typesafe.config.ConfigFactory
 import scala.language.postfixOps
 import spray.json._
-
-class Routes extends Service with Protocols {
+import scala.util.{Failure, Success}
+import akka.http.scaladsl.model.StatusCodes._
+class Routes extends TopicsService with AnswersService with Protocols {
   val LIMIT = ConfigFactory.load().getInt("page.limit")
 
   val route =
@@ -17,8 +18,8 @@ class Routes extends Service with Protocols {
       get {
         (path(IntNumber) | parameters('id.as[Int])) { id =>
           complete(findTopic(id).map[ToResponseMarshallable] {
-            case Some(t) => "ss"
-            case _ => "cos jestnie tak"
+            case Some(t) => t
+            case _ => ErrorMessage(s"Couldn't find topic with id $id")
           })
         } ~
         (parameters('page.as[Int].?, 'limit.as[Int].?)) { (page, limit) =>
@@ -34,44 +35,72 @@ class Routes extends Service with Protocols {
         }
       } ~
       post { 
-          reject
-          // entity(as[TopicInput]) { t =>
-            // complete(createTopic(t).map[ToResponseMarshallable])
-          // }
-        } 
-    //     ~
-    //   put {
-    //     entity(as[UpdateRequest]){ t =>
-    //       complete(updateTopic(t).map[ToResponseMarshallable])
-    //     }
-    //   } ~
-    //   delete {
-    //     entity(as[DeleteRequest]){ t =>
-    //       complete(deleteTopic(t).map[ToResponseMarshallable])
-    //     }
-    //   }
-    // } ~
-    //   pathPrefix("answers") {
-    //   get {
-    //     (path(IntNumber) | parameter('id.as[Int])) { id =>
-    //         complete(findAnswer(id).mapTo[Int])
-    //       }
-    //     }
-    //   } ~
-    //   post { 
-    //       entity(as[AnswerInput]) { a =>
-    //         complete(createAnswer(a).map[ToResponseMarshallable])
-    //       }
-    //     } ~
-    //   put {
-    //     entity(as[UpdateRequest]){ a =>
-    //       complete(updateAnswer(a).map[ToResponseMarshallable])
-    //     }
-    //   } ~
-    //   delete {
-    //     entity(as[DeleteRequest]){ a =>
-    //       complete(deleteAnswer(a).map[ToResponseMarshallable])
-    //     }
-  // }
+          entity(as[TopicInput]) { t =>
+            val createTopicFuture = createTopic(t)
+            onComplete(createTopicFuture) {
+              case Success(s) => complete(SuccessMessage(s toString))
+              case Failure(e) => complete(ErrorMessage("Unable to add topic"))
+            }
+          }
+        } ~
+      put {
+        entity(as[UpdateRequest]){ a =>
+          val updateTopicFuture = updateTopic(a)
+          onComplete(updateTopicFuture) {
+            case Success(s) => complete(ErrorMessage(s toString))
+            case Failure(e) => complete(ErrorMessage("Unable to edit answer"))
+          }
+        }
+      } ~
+      delete {
+        entity(as[DeleteRequest]){ a =>
+          val deleteTopicFuture = deleteTopic(a)
+          onComplete(deleteTopicFuture) {
+            case Success(s) => complete(OK)
+            case Failure(e) => complete(ErrorMessage("Unable to edit answer"))
+          }
+        }
+     } 
+    }~
+      pathPrefix("answers") {
+      get {
+        (path(IntNumber) | parameter('id.as[Int])) { id =>
+            complete(
+              findAnswer(id).map[ToResponseMarshallable]{
+                case Some(s) => s
+                case None => (NotFound, ErrorMessage(s"answer with id $id not found"))
+              }
+            )
+          }
+        }
+      } ~
+      post { 
+          entity(as[AnswerInput]) { a =>
+            val createTopicFuture = createAnswer(a)
+            onComplete(createTopicFuture) {
+              case Success(s) => complete(SuccessMessage(s toString))
+              case _ => complete(ErrorMessage("Unable to add topic"))
+            }
+          }
+        } ~ 
+      put {
+        entity(as[UpdateRequest]){ a =>
+          val updateAnswerFuture = updateAnswer(a)
+          onComplete(updateAnswerFuture) {
+            case Success(s) => complete(ErrorMessage(s toString))
+            case Failure(e) => complete(ErrorMessage("Unable to edit answer"))
+          }
+        }
+      } ~
+      delete {
+        entity(as[DeleteRequest]){ a =>
+          val deleteAnswerFuture = deleteAnswer(a)
+          onComplete(deleteAnswerFuture) {
+            case Success(s) => complete(OK)
+            case Failure(e) => complete(ErrorMessage("Unable to edit answer"))
+          }
+        }
+  } ~
+  redirect("/topics", PermanentRedirect)
 } 
-}
+

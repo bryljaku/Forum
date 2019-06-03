@@ -31,7 +31,7 @@ libraryDependencies ++= Seq(
   "com.h2database" % "h2" % "latest.integration",
   "org.postgresql" % "postgresql" % "9.3-1102-jdbc4",
 // jwt
-  "com.pauldijou" %% "jwt-spray-json" % "2.1.0",
+  // "com.pauldijou" %% "jwt-spray-json" % "2.1.0",
   // kebs
   // "pl.iterators" %% "kebs-spray-json" % "1.6.2",
 )

@@ -7,8 +7,11 @@ import slick.sql.{FixedSqlStreamingAction, SqlAction}
 import scala.language.implicitConversions
 import scala.concurrent.Future
 
-trait DbBase extends DbScheme {
+trait DbBase {
   val db: Database = Database.forConfig("postgres")
   protected implicit def executeFromDb[A](action: SqlAction[A, NoStream, _ <: slick.dbio.Effect]): Future[A] = db.run(action)
   protected implicit def executeReadStreamFromDb[A](action: FixedSqlStreamingAction[Seq[A], A, _ <: slick.dbio.Effect]): Future[Seq[A]] = db.run(action)
+
+  val topicsTable = TableQuery[TopicsTable]
+  val answersTable = TableQuery[AnswersTable]
 }

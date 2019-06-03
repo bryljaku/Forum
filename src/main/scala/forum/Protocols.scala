@@ -9,12 +9,15 @@ import scala.language.implicitConversions
 trait Protocols extends SprayJsonSupport with DefaultJsonProtocol {
     implicit val printer = PrettyPrinter
     implicit val timestampFormat: JsonFormat[Timestamp] = jsonFormat[Timestamp](TimestampReader, TimestampWriter)
-    implicit val topicInputFormat: JsonFormat[TopicInput] = jsonFormat3(TopicInput)
-    implicit val answerInputFormat: JsonFormat[AnswerInput] = jsonFormat3(AnswerInput)
-    implicit val updateRequestFormat: JsonFormat[UpdateRequest] = jsonFormat3(UpdateRequest)
-    implicit val deleteRequestFormat: JsonFormat[DeleteRequest] = jsonFormat2(DeleteRequest)
-    implicit val answerFormat: JsonFormat[Answer] = jsonFormat6(Answer)
-    implicit val topicFormat: JsonFormat[Topic] = jsonFormat6(Topic)
+    implicit val topicInputFormat: RootJsonFormat[TopicInput] = jsonFormat3(TopicInput)
+    implicit val answerInputFormat: RootJsonFormat[AnswerInput] = jsonFormat3(AnswerInput)
+    implicit val updateRequestFormat: RootJsonFormat[UpdateRequest] = jsonFormat3(UpdateRequest)
+    implicit val deleteRequestFormat: RootJsonFormat[DeleteRequest] = jsonFormat2(DeleteRequest)
+    implicit val answerFormat: RootJsonFormat[Answer] = jsonFormat6(Answer)
+    implicit val topicFormat: RootJsonFormat[Topic] = jsonFormat6(Topic)
+    implicit val errorMessageFormat: RootJsonFormat[ErrorMessage] = jsonFormat1(ErrorMessage)
+    implicit val successMessageFormat: RootJsonFormat[SuccessMessage] = jsonFormat1(SuccessMessage)
+
 }
 
 object DateTimestampConversion{
@@ -34,4 +37,3 @@ object TimestampReader extends RootJsonReader[Timestamp] {
 object TimestampWriter extends RootJsonWriter[Timestamp] {
   def write(timestamp: Timestamp): JsValue = JsString(timestamp.toString)
 }
-
