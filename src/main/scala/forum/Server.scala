@@ -16,15 +16,14 @@ object Server extends Routes with App {
     implicit val system: ActorSystem = ActorSystem("Forum")
     implicit val materializer: ActorMaterializer = ActorMaterializer()
     import system.dispatcher
-
     val interface = ConfigFactory.load().getString("app.interface")
     val port = ConfigFactory.load().getString("app.port").toInt
+    // InitDatabase.startDB
 
     val serverBinding = Http().bindAndHandle(route, interface, port)
 
     println(s"Server online at http://$interface:$port/\n")    
     readLine()
-    
     db.close()
     serverBinding
       .flatMap(_.unbind())

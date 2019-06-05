@@ -6,6 +6,7 @@ import slick.lifted.TableQuery
 import slick.sql.{FixedSqlStreamingAction, SqlAction}
 import scala.language.implicitConversions
 import scala.concurrent.Future
+import com.typesafe.config.ConfigFactory
 
 trait DbBase {
   val db: Database = Database.forConfig("postgres")
@@ -14,4 +15,7 @@ trait DbBase {
 
   val topicsTable = TableQuery[TopicsTable]
   val answersTable = TableQuery[AnswersTable]
+  val ANSWERSLIMIT = ConfigFactory.load().getInt("page.answersLimit")
+  val TOPICSLIMIT = ConfigFactory.load().getInt("page.topicsLimit")
+
 }

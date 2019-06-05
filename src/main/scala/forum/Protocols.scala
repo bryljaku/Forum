@@ -9,12 +9,12 @@ import scala.language.implicitConversions
 trait Protocols extends SprayJsonSupport with DefaultJsonProtocol {
     implicit val printer = PrettyPrinter
     implicit val timestampFormat: JsonFormat[Timestamp] = jsonFormat[Timestamp](TimestampReader, TimestampWriter)
-    implicit val topicInputFormat: RootJsonFormat[TopicInput] = jsonFormat3(TopicInput)
-    implicit val answerInputFormat: RootJsonFormat[AnswerInput] = jsonFormat3(AnswerInput)
+    implicit val topicInputFormat: RootJsonFormat[TopicInput] = jsonFormat4(TopicInput)
+    implicit val answerInputFormat: RootJsonFormat[AnswerInput] = jsonFormat4(AnswerInput)
     implicit val updateRequestFormat: RootJsonFormat[UpdateRequest] = jsonFormat3(UpdateRequest)
     implicit val deleteRequestFormat: RootJsonFormat[DeleteRequest] = jsonFormat2(DeleteRequest)
-    implicit val answerFormat: RootJsonFormat[Answer] = jsonFormat6(Answer)
-    implicit val topicFormat: RootJsonFormat[Topic] = jsonFormat6(Topic)
+    implicit val answerFormat: RootJsonFormat[Answer] = jsonFormat7(Answer)
+    implicit val topicFormat: RootJsonFormat[Topic] = jsonFormat7(Topic)
     implicit val errorMessageFormat: RootJsonFormat[ErrorMessage] = jsonFormat1(ErrorMessage)
     implicit val successMessageFormat: RootJsonFormat[SuccessMessage] = jsonFormat1(SuccessMessage)
 

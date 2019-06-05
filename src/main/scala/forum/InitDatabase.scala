@@ -17,11 +17,11 @@ import scala.math.floor
 object InitDatabase extends DbBase {
   def addTopics: Seq[Topic] =
     for (i <- 0 to 10) 
-     yield Topic(None, "jakisnick" + i, "Tooopic", "topicc", new Date, i toInt)
+     yield Topic(None, "jakisnick" + i, "jakismail", "Tooopic", "topicc", new Date, i toInt)
 
   def addAnswers: Seq[Answer] =
     for (i <- 1 to 30)
-     yield Answer(None, "jakismail" + i + "@e.o", floor(i / 4 + 1) toInt, "answerstawe", new Date, i toInt)
+     yield Answer(None, "jakisNick", "jakismail" + i + "@e.o", floor(i / 4 + 1) toInt, "answerstawe", new Date, i toInt)
 
 
   def startDB = {
@@ -59,6 +59,7 @@ object InitDatabase extends DbBase {
   }
   def runQuery = {
     val queryFuture = Future {
+        db.run(DBIO.seq(topicsTable ++= addTopics)) 
         db.run(DBIO.seq(answersTable ++= addAnswers))
     }
     Await.result(queryFuture, Duration.Inf).andThen {

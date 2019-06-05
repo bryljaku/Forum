@@ -5,62 +5,60 @@ import akka.http.scaladsl.marshalling.ToResponseMarshallable
 import scala.concurrent.ExecutionContext.Implicits.global
 import akka.http.scaladsl.server.Directives._
 import scala.language.implicitConversions
-import com.typesafe.config.ConfigFactory
 import scala.language.postfixOps
 import spray.json._
 import scala.util.{Failure, Success}
 import akka.http.scaladsl.model.StatusCodes._
+import slick.jdbc.H2Profile.api.Database
 
-class Routes extends TopicsService with AnswersService with Protocols {
-  val LIMIT = ConfigFactory.load().getInt("page.limit")
+import AnswersService._
+import TopicsService._
+
+class Routes extends Protocols {
+  val db: Database = Database.forConfig("postgres")
 
   val route =
     pathPrefix("topics") {
       pathEndOrSingleSlash {
         get {
           (parameters('page.as[Int].?, 'limit.as[Int].?)) { (page, limit) =>
-            val p = page match {
-              case Some(s) if s >= 0 => s
-              case _                 => 0
-            }
-            val l = limit match {
-              case Some(s) if s >= 0 && s < LIMIT => s
-              case _                              => LIMIT
-            }
-            complete(findTopics(p, l))
+            complete(findTopics(page, limit))
           }
         } ~
           post {
             entity(as[TopicInput]) { t =>
-              complete(createTopic(t).map[ToResponseMarshallable] {
-                case secret: Int if secret > 999 && secret < 10000 =>
-                  SuccessMessage(
-                    s"Topic added correctly. Secret: ${secret toString}")
-                case _ => ErrorMessage("Unable to add topic")
+              (createTopic(t) match {
+                case Some(dbAction) => 
+                  onComplete(dbAction) {
+                    case Success(response) => complete(SuccessMessage(s"secret: $response"))
+                    case Failure(ex) => complete(ex.getMessage)
+                }
+                case None => complete(ErrorMessage("Something is wrong with your topic input"))
               })
             }
           }
       } ~
         pathPrefix(IntNumber) { topicId =>
           pathPrefix("answers") {
-            get {
-              (path(IntNumber) | parameter('answerId.as[Int])) { answerId =>
-                complete(findTopicAnswers(topicId, answerId)
+            get {                                   //  ANSWERSLIMIT
+                parameters('mid ? 0, 'before ? 0, 'after ? 20) { (mid, before, after) =>
+                complete(findTopicAnswers(topicId, mid, before, after)
                   .map[ToResponseMarshallable] {
-                    case t: List[Answer] => t
+                    case t: List[Answer] if t.nonEmpty => t
                     case _ =>
-                      ErrorMessage(s"Couldn't find topic with id $topicId")
+                      ErrorMessage(s"Couldn't find answers for topic with id: $topicId.")
                   })
               }
             } ~
               post {
                 entity(as[AnswerInput]) { a =>
-                  complete(createAnswer(a).map[ToResponseMarshallable] {
-                    case secret: Int if secret > 999 && secret < 10000 =>
-                      SuccessMessage(
-                        s"Answer added correctly. Secret: ${secret toString}")
-                    case _ => ErrorMessage("Unable to add answer")
-                  })
+                  createAnswer(a) match {
+                    case Some(resp) => onComplete(resp) {
+                      case Success(secret) if secret > 999 && secret < 10000 => complete(SuccessMessage(s"secret: $secret"))
+                      case Failure(ex) => complete(ex.getMessage)
+                    }
+                    case _ => complete(ErrorMessage("Check your answer input, something is wrong"))
+                  }
                 }
               } ~
               put {
