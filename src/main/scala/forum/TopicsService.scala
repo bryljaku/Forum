@@ -13,11 +13,11 @@ object TopicsService extends DbBase with InputHandler {
 
     def findTopics(page: Option[Int], limit: Option[Int]): Future[List[Topic]] = {
         val limitVal: Int = limit match {
-            case Some(lim) if lim <= TOPICSLIMIT => lim
+            case Some(l) if l <= TOPICSLIMIT => l
             case _ => TOPICSLIMIT
         }
         val pageVal: Int = page match {
-            case Some(pag) => pag
+            case Some(p) => p
             case _ => 0
         }
         topicsTable.to[List].sortBy(_.lastActivity.desc).drop(pageVal * limitVal).take(limitVal).result
@@ -37,10 +37,10 @@ object TopicsService extends DbBase with InputHandler {
     }
 
     def updateTopic(request: UpdateRequest): Future[Int] =
-    topicValidation(request.id, request.secret)
-    .map(t => (t.content, t.lastActivity))
-    .update((request.content, new Date))
+        topicValidation(request.id, request.secret)
+        .map(t => (t.content, t.lastActivity))
+        .update((request.content, new Date))
 
-    def deleteTopic(request: DeleteRequest): Future[Int] = topicValidation(request.id, request.secret).delete // answers cascade on delete 
+    def deleteTopic(request: DeleteRequest): Future[Int] = topicValidation(request.id, request.secret).delete
 }
 

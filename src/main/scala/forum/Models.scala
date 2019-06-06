@@ -13,6 +13,5 @@ case class UpdateRequest(id: Int, secret: Int, content: String)
 case class DeleteRequest(id: Int, secret: Int)
 case class Status(status: String)
 
-
 case class ErrorMessage(message: String)
 case class SuccessMessage(message: String)

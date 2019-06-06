@@ -40,7 +40,7 @@ class Routes extends Protocols {
       } ~
         pathPrefix(IntNumber) { topicId =>
           pathPrefix("answers") {
-            get {                                   //  ANSWERSLIMIT
+            get {                                   
                 parameters('mid ? 0, 'before ? 0, 'after ? 20) { (mid, before, after) =>
                 complete(findTopicAnswers(topicId, mid, before, after)
                   .map[ToResponseMarshallable] {
@@ -54,7 +54,7 @@ class Routes extends Protocols {
                 entity(as[AnswerInput]) { a =>
                   createAnswer(a) match {
                     case Some(resp) => onComplete(resp) {
-                      case Success(secret) if secret > 999 && secret < 10000 => complete(SuccessMessage(s"secret: $secret"))
+                      case Success(secret) if secret > 0 => complete(SuccessMessage(s"secret: $secret"))
                       case Failure(ex) => complete(ex.getMessage)
                     }
                     case _ => complete(ErrorMessage("Check your answer input, something is wrong"))
@@ -89,7 +89,7 @@ class Routes extends Protocols {
                 put {
                   entity(as[UpdateRequest]) { t =>
                     complete(updateTopic(t).map[ToResponseMarshallable] {
-                      case 1 => SuccessMessage("topic updated successfully")
+                      case 1 => SuccessMessage("topic updated successfully.")
                       case _ => ErrorMessage("unable to update topic")
                     })
                   }
@@ -104,7 +104,6 @@ class Routes extends Protocols {
                 }
             }
         }
-    } 
-      // redirect("/topics", PermanentRedirect)
-
+    } ~
+    complete(NotFound)
 }

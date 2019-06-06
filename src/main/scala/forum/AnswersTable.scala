@@ -14,5 +14,5 @@ class AnswersTable(tag: Tag) extends Table[Answer](tag, "answers") {
 
     def * = (id.?, nickname, mail, topicID, content, lastActivity, secret) <> ((Answer.apply _).tupled, Answer.unapply)
 
-    def topic = foreignKey("topic_fk", topicID, TableQuery[TopicsTable])(_.id) 
+    def topic = foreignKey("topic_fk", topicID, TableQuery[TopicsTable])(_.id, onDelete=ForeignKeyAction.Cascade) 
 }
