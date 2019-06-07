@@ -15,8 +15,8 @@ trait Protocols extends SprayJsonSupport with DefaultJsonProtocol {
     implicit val deleteRequestFormat: RootJsonFormat[DeleteRequest] = jsonFormat2(DeleteRequest)
     implicit val answerFormat: RootJsonFormat[Answer] = jsonFormat7(Answer)
     implicit val topicFormat: RootJsonFormat[Topic] = jsonFormat7(Topic)
-    implicit val errorMessageFormat: RootJsonFormat[ErrorMessage] = jsonFormat1(ErrorMessage)
-    implicit val successMessageFormat: RootJsonFormat[SuccessMessage] = jsonFormat1(SuccessMessage)
+    implicit val errorMessageFormat: RootJsonFormat[ErrorMessage] = jsonFormat1(ErrorMessage.apply)
+    implicit val successMessageFormat: RootJsonFormat[SuccessMessage] = jsonFormat1(SuccessMessage.apply)
 
 }
 

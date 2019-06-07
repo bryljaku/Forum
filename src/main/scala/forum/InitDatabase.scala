@@ -59,8 +59,8 @@ object InitDatabase extends DbBase {
   }
   def runQuery = {
     val queryFuture = Future {
-        db.run(DBIO.seq(topicsTable ++= addTopics)) 
         db.run(DBIO.seq(answersTable ++= addAnswers))
+        
     }
     Await.result(queryFuture, Duration.Inf).andThen {
       case Success(_) => println("querySuccess")

@@ -30,10 +30,10 @@ class Routes extends Protocols {
               (createTopic(t) match {
                 case Some(dbAction) => 
                   onComplete(dbAction) {
-                    case Success(response) => complete(SuccessMessage(s"secret: $response"))
+                    case Success((id,secret)) => complete(Created, (SuccessMessage.create, id, secret))
                     case Failure(ex) => complete(ex.getMessage)
                 }
-                case None => complete(ErrorMessage("Something is wrong with your topic input"))
+                case None => complete(BadRequest, ErrorMessage(ErrorMessage.wrongInput))
               })
             }
           }
@@ -44,9 +44,8 @@ class Routes extends Protocols {
                 parameters('mid ? 0, 'before ? 0, 'after ? 20) { (mid, before, after) =>
                 complete(findTopicAnswers(topicId, mid, before, after)
                   .map[ToResponseMarshallable] {
-                    case t: List[Answer] if t.nonEmpty => t
-                    case _ =>
-                      ErrorMessage(s"Couldn't find answers for topic with id: $topicId.")
+                    case t: List[Answer] => t
+                    case _ => (NotFound, ErrorMessage(ErrorMessage.findAnswers)) 
                   })
               }
             } ~
@@ -54,26 +53,31 @@ class Routes extends Protocols {
                 entity(as[AnswerInput]) { a =>
                   createAnswer(a) match {
                     case Some(resp) => onComplete(resp) {
-                      case Success(secret) if secret > 0 => complete(SuccessMessage(s"secret: $secret"))
+                      case Success((id, secret)) if secret > 0 => complete((SuccessMessage.create, id, secret))
                       case Failure(ex) => complete(ex.getMessage)
                     }
-                    case _ => complete(ErrorMessage("Check your answer input, something is wrong"))
+                    case _ => complete(BadRequest, ErrorMessage(ErrorMessage.wrongInput))
                   }
                 }
               } ~
-              put {
-                entity(as[UpdateRequest]) { a =>
-                  complete(updateAnswer(a).map[ToResponseMarshallable] {
-                    case 1 => SuccessMessage("answer updated successfully")
-                    case _ => ErrorMessage("unable to update message")
+             put {
+                  entity(as[UpdateRequest]) { a =>
+                    (updateAnswer(a) match {
+                      case Some(dbAction) => 
+                        onComplete(dbAction) {
+                          case Success(1) => complete(SuccessMessage.update)
+                          case Success(_) => complete(ErrorMessage.wrongInput)
+                          case Failure(ex) => complete(ex.getMessage)
+                        }
+                      case None => complete(BadRequest, ErrorMessage(ErrorMessage.wrongUpdate))
                   })
-                }
-              } ~
+                  }
+                } ~
               delete {
                 entity(as[DeleteRequest]) { a =>
                   complete(deleteAnswer(a).map[ToResponseMarshallable] {
-                    case 1 => SuccessMessage("answer deleted successfully")
-                    case _ => ErrorMessage("unable to delete answer")
+                    case 1 => SuccessMessage(SuccessMessage.delete)
+                    case _ => (Unauthorized, ErrorMessage(ErrorMessage.delete))
                   })
                 }
               }
@@ -82,23 +86,27 @@ class Routes extends Protocols {
               get {
                 complete(findTopic(topicId).map[ToResponseMarshallable] {
                   case Some(t) => t
-                  case _ =>
-                    ErrorMessage(s"Couldn't find topic with id $topicId")
+                  case _ => (NotFound, ErrorMessage(ErrorMessage.findTopic + topicId))
                 })
               } ~
                 put {
                   entity(as[UpdateRequest]) { t =>
-                    complete(updateTopic(t).map[ToResponseMarshallable] {
-                      case 1 => SuccessMessage("topic updated successfully.")
-                      case _ => ErrorMessage("unable to update topic")
-                    })
+                    (updateTopic(t) match {
+                      case Some(dbAction) => 
+                        onComplete(dbAction) {
+                          case Success(1) => complete(SuccessMessage.update)
+                          case Success(_) => complete(ErrorMessage.wrongInput)
+                          case Failure(ex) => complete(ex.getMessage)
+                        }
+                      case None => complete(BadRequest, ErrorMessage(ErrorMessage.wrongUpdate))
+                  })
                   }
                 } ~
                 delete {
                   entity(as[DeleteRequest]) { t =>
                     complete(deleteTopic(t).map[ToResponseMarshallable] {
-                      case 1 => SuccessMessage("topic deleted successfully")
-                      case _ => ErrorMessage("unable to delete topic")
+                      case 1 => SuccessMessage(SuccessMessage.delete)
+                      case _ => (Unauthorized, ErrorMessage(ErrorMessage.delete))
                     })
                   }
                 }

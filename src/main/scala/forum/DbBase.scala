@@ -15,7 +15,4 @@ trait DbBase {
 
   val topicsTable = TableQuery[TopicsTable]
   val answersTable = TableQuery[AnswersTable]
-  val ANSWERSLIMIT = ConfigFactory.load().getInt("page.answersLimit")
-  val TOPICSLIMIT = ConfigFactory.load().getInt("page.topicsLimit")
-
 }

@@ -6,41 +6,33 @@ import DateTimestampConversion._
 import scala.concurrent.Future
 import java.util.Date
 import scala.language.postfixOps
-
+import com.typesafe.config.ConfigFactory
+import Validation._
 
 object TopicsService extends DbBase with InputHandler {
-    private def topicValidation(id: Int, secret: Int) = topicsTable.filter(t => t.id === id && t.secret === secret)
+    private def topicCheckSecret(id: Int, secret: Int) = topicsTable.filter(t => t.id === id && t.secret === secret)
 
     def findTopics(page: Option[Int], limit: Option[Int]): Future[List[Topic]] = {
-        val limitVal: Int = limit match {
-            case Some(l) if l <= TOPICSLIMIT => l
-            case _ => TOPICSLIMIT
-        }
-        val pageVal: Int = page match {
-            case Some(p) => p
-            case _ => 0
-        }
+        val (pageVal, limitVal): (Int, Int) = validateTopicsPagination(page, limit)
         topicsTable.to[List].sortBy(_.lastActivity.desc).drop(pageVal * limitVal).take(limitVal).result
     }
     def findTopic(topicId: Int): Future[Option[Topic]] = topicsTable.filter(_.id === topicId).result.headOption
 
-    def createTopic(topic: TopicInput): Option[Future[Int]] = {
-        def createTopicHelper(topic: TopicInput): Future[Int] = (topicsTable returning topicsTable.map(_.secret) += topicFromInput(topic))
-        val validateMail: Boolean= topic.mail contains '@'
-        val validateContent: Boolean = (topic.content).size > 0
-        val validateTopic: Boolean = (topic.topic).size > 0 
+    def createTopic(topic: TopicInput): Option[Future[(Int, Int)]] = {
+        def createTopicHelper(topic: TopicInput): Future[(Int, Int)] = (topicsTable returning topicsTable.map(x => (x.id, x.secret)) += topicFromInput(topic))
 
-        if (validateMail && validateContent && validateTopic) 
-            Some(createTopicHelper(topic))
-        else
-            None
+        if (validateTopicInput(topic)) Some(createTopicHelper(topic))
+        else None
     }
 
-    def updateTopic(request: UpdateRequest): Future[Int] =
-        topicValidation(request.id, request.secret)
+    def updateTopic(request: UpdateRequest): Option[Future[Int]] = {
+        def updateAction: Future[Int] = topicCheckSecret(request.id, request.secret)
         .map(t => (t.content, t.lastActivity))
         .update((request.content, new Date))
 
-    def deleteTopic(request: DeleteRequest): Future[Int] = topicValidation(request.id, request.secret).delete
+        if (validateUpdateRequest(request)) Some(updateAction)
+        else None
+}
+    def deleteTopic(request: DeleteRequest): Future[Int] = topicCheckSecret(request.id, request.secret).delete
 }
 

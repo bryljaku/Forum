@@ -15,3 +15,17 @@ case class Status(status: String)
 
 case class ErrorMessage(message: String)
 case class SuccessMessage(message: String)
+
+object ErrorMessage {
+    val wrongInput = "Something is wrong with your input."
+    val wrongUpdate = "Your update input is invalid. Try again with less content"
+    val delete = "Unable to delete. Check your secret and try again"
+    val update = "Unable to update. Check your secret and try again"
+    val findAnswers = "Couldn't find answers for topic with given ID"
+    val findTopic = "Couldn't find topic"
+}
+object SuccessMessage {
+    val update = "Content updated successfully"
+    val delete = "Content deleted successfully"
+    val create = "Content created successfully"
+}
