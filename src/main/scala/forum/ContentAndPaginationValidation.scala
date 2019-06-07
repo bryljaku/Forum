@@ -23,22 +23,23 @@ object ContentAndPaginationValidation {
             case _ => topicsLimit
         }
         val pageVal: Int = page match {
-            case Some(l) if l <= topicsLimit => l
-            case _ => topicsLimit
+            case Some(p) if p >= 0 => p
+            case _ => 0
         }   
         (pageVal, limitVal)
     }
-    def validateAndCorrectAnswersPagination(before: Int, after: Int) = {
+    def validateAndCorrectAnswersPagination(before: Int, after: Int, mid: Int) = {
         def validatePagination = before + after + 1 <= answersLimit
+        val correctedBefore = if (before > mid) mid else before
         def correctPagination = {
-            val afterRatio = after / (before + after)
-            val beforeRatio = before / (before + after)
+            val afterRatio = after / (correctedBefore + after).toFloat
+            val beforeRatio = correctedBefore / (correctedBefore + after)
             ((beforeRatio * answersLimit) toInt, (afterRatio * answersLimit) toInt)
         }
 
         if (validatePagination)
-            (before, after)
-        else 
+            (correctedBefore, after)
+        else
             correctPagination
         }
     def validateAnswerInput(answer: AnswerInput) = {

@@ -19,7 +19,7 @@ object AnswersService extends DbBase with InputHandler {
       .drop(mid - before)
       .take(before + 1 + after).result
 
-      val (beforeVal, afterVal): (Int, Int) = validateAndCorrectAnswersPagination(before, after)
+      val (beforeVal, afterVal): (Int, Int) = validateAndCorrectAnswersPagination(before, after, mid)
       findAction(topicId, mid, beforeVal, afterVal)
   }
   def findAnswer(answerId: Int): Future[Option[Answer]] = answersTable.filter(_.id === answerId).result.headOption

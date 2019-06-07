@@ -30,8 +30,8 @@ object InitDatabase extends DbBase {
     }
     Await.result(dropFuture, Duration.Inf).andThen {
       case Success(_) => createTablesAndInsert
-      case Failure(_) => {
-        println("drop failed")
+      case Failure(ex) => {
+        println(s"drop failed, exception: $ex")
         createTablesAndInsert
       }
     }
