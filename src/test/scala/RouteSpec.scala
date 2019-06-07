@@ -16,39 +16,30 @@ import akka.http.scaladsl.testkit.ScalatestRouteTest
 import akka.stream.scaladsl.Flow
 import org.scalatest._
 import RouteSpecHelper._
-// val topicInputEntity = TopicInput("user", "correct@ma.il", "subject", "content")
-// val wrongTopicInputEntity = TopicInput("user", "wrongma.il", "subject", "content")
-// val answerInputEntity = AnswerInput("user", "correct@ma.il", 1, "content")
-// val wrongAnswerInputEntity = AnswerInput("user", "wrongma.il", 1, "content")
 
-// val topicInput = ByteString( """{
-//     "content": "topicc",
-//     "nickname": "jakisnick5",
-//     "mail": "topicowy@mail.com",
-//     "topic": "Tooopic"
-// }""".stripMargin)
 
 class RouteSpec extends WordSpec with Matchers with ScalatestRouteTest {
-
 "Service" should {
-    "/topics return status ok" in {
-        Get("/topics") ~> route ~> check {
+    "return status ok when getting topics list" in {
+        topicsGetRequest ~> route ~> check {
             status shouldBe OK
         }
     }
-    "/topics/id respond with 404 error" in {
+    "respond with 404 error when getting topic which does not exist" in {
         Get("/topics/123457") ~> route ~> check {
             status shouldBe NotFound
       }
+    }  
+    "respond status ok when adding topic" in {
+        topicPostRequest ~> route ~> check {
+            status shouldBe Created
+        }
     }
-    "/answers/id respond status ok" in {
-        Get("/topics/")
+    "respond status BadRequest when adding invalid topic" in {
+        topicInvalidPostRequest ~> route ~> check {
+            status shouldBe BadRequest
+        }
     }
-
-    // "return id and secret when adding topic" in {
-    //     Post("topics").withEntity(topicInputEntity) ~> route ~> check {
-    //         responseAs[(String, Int, Int)]
-    //     }
-    // }
+    
 }
 }

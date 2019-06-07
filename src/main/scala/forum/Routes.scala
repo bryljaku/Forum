@@ -9,13 +9,10 @@ import scala.language.postfixOps
 import spray.json._
 import scala.util.{Failure, Success}
 import akka.http.scaladsl.model.StatusCodes._
-import slick.jdbc.H2Profile.api.Database
-
 import AnswersService._
 import TopicsService._
 
 class Routes extends Protocols {
-  val db: Database = Database.forConfig("postgres")
 
   val route =
     pathPrefix("topics") {
@@ -44,14 +41,14 @@ class Routes extends Protocols {
                 parameters('mid ? 0, 'before ? 0, 'after ? 20) { (mid, before, after) =>
                 complete(findTopicAnswers(topicId, mid, before, after)
                   .map[ToResponseMarshallable] {
-                    case t: List[Answer] => t
+                    case a: List[Answer] => a
                     case _ => (NotFound, ErrorMessage(ErrorMessage.findAnswers)) 
                   })
               }
             } ~
               post {
                 entity(as[AnswerInput]) { a =>
-                  createAnswer(a) match {
+                  createAnswer(a, topicId) match {
                     case Some(resp) => onComplete(resp) {
                       case Success((id, secret)) if secret > 0 => complete((SuccessMessage.create, id, secret))
                       case Failure(ex) => complete(ex.getMessage)
@@ -66,7 +63,7 @@ class Routes extends Protocols {
                       case Some(dbAction) => 
                         onComplete(dbAction) {
                           case Success(1) => complete(SuccessMessage.update)
-                          case Success(_) => complete(ErrorMessage.wrongInput)
+                          case Success(_) => complete(NotModified, ErrorMessage.wrongInput)
                           case Failure(ex) => complete(ex.getMessage)
                         }
                       case None => complete(BadRequest, ErrorMessage(ErrorMessage.wrongUpdate))
@@ -95,7 +92,7 @@ class Routes extends Protocols {
                       case Some(dbAction) => 
                         onComplete(dbAction) {
                           case Success(1) => complete(SuccessMessage.update)
-                          case Success(_) => complete(ErrorMessage.wrongInput)
+                          case Success(_) => complete(NotModified, ErrorMessage.wrongInput)
                           case Failure(ex) => complete(ex.getMessage)
                         }
                       case None => complete(BadRequest, ErrorMessage(ErrorMessage.wrongUpdate))

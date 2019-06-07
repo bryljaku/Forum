@@ -17,35 +17,32 @@ import scala.math.floor
 object InitDatabase extends DbBase {
   def addTopics: Seq[Topic] =
     for (i <- 0 to 10) 
-     yield Topic(None, "jakisnick" + i, "jakismail", "Tooopic", "topicc", new Date, i toInt)
+     yield Topic(None, "topicNick" + i, "topicMail" + i + "@e.o", "Tooopic", "Did you..", new Date, i toInt)
 
   def addAnswers: Seq[Answer] =
-    for (i <- 1 to 30)
-     yield Answer(None, "jakisNick", "jakismail" + i + "@e.o", floor(i / 4 + 1) toInt, "answerstawe", new Date, i toInt)
+    for (i <- 0 to 30)
+     yield Answer(None, "answerNick", "answerMail" + i + "@e.o", floor(i / 3 + 1) toInt, "Yes, I...", new Date, i toInt)
 
 
   def startDB = {
     val dropFuture = Future {
-      println("to ja")
-      db.run(DBIO.seq(topicsTable.schema.drop))
+      db.run(DBIO.seq(answersTable.schema.drop, topicsTable.schema.drop))
     }
     Await.result(dropFuture, Duration.Inf).andThen {
-      case Success(_) => doSomething
+      case Success(_) => createTablesAndInsert
       case Failure(_) => {
         println("drop failed")
-        doSomething
+        createTablesAndInsert
       }
     }
   }
-  def doSomething = {
+  def createTablesAndInsert = {
       val existing = db.run(MTable.getTables)
       val tables = List(topicsTable, answersTable) 
 
     val setupFuture = Future {
     existing.flatMap( v => {
       val names = v.map(mt => mt.name.name)
-        println("tworze tabelki")
-
       val createIfNotExist = tables.filter( table =>
         (!names.contains(table.baseTableRow.tableName))).map(_.schema.create)
       db.run(DBIO.sequence(createIfNotExist))
@@ -55,17 +52,14 @@ object InitDatabase extends DbBase {
       case Success(_) => runQuery
       case Failure(err) => println(err);
     }
-    println("Seeya!")
   }
   def runQuery = {
     val queryFuture = Future {
-        db.run(DBIO.seq(answersTable ++= addAnswers))
-        
+        db.run(DBIO.seq(topicsTable ++= addTopics, answersTable ++= addAnswers))
     }
     Await.result(queryFuture, Duration.Inf).andThen {
       case Success(_) => println("querySuccess")
       case Failure(err) => println(err);
-      println("Oh Noes!")
     }
   }
 

@@ -6,14 +6,13 @@ import DateTimestampConversion._
 import scala.concurrent.Future
 import java.util.Date
 import scala.language.postfixOps
-import com.typesafe.config.ConfigFactory
-import Validation._
+import ContentAndPaginationValidation._
 
 object TopicsService extends DbBase with InputHandler {
     private def topicCheckSecret(id: Int, secret: Int) = topicsTable.filter(t => t.id === id && t.secret === secret)
 
     def findTopics(page: Option[Int], limit: Option[Int]): Future[List[Topic]] = {
-        val (pageVal, limitVal): (Int, Int) = validateTopicsPagination(page, limit)
+        val (pageVal, limitVal): (Int, Int) = validateAndCorrectTopicsPagination(page, limit)
         topicsTable.to[List].sortBy(_.lastActivity.desc).drop(pageVal * limitVal).take(limitVal).result
     }
     def findTopic(topicId: Int): Future[Option[Topic]] = topicsTable.filter(_.id === topicId).result.headOption
@@ -27,8 +26,8 @@ object TopicsService extends DbBase with InputHandler {
 
     def updateTopic(request: UpdateRequest): Option[Future[Int]] = {
         def updateAction: Future[Int] = topicCheckSecret(request.id, request.secret)
-        .map(t => (t.content, t.lastActivity))
-        .update((request.content, new Date))
+            .map(t => (t.content, t.lastActivity))
+            .update((request.content, new Date))
 
         if (validateUpdateRequest(request)) Some(updateAction)
         else None

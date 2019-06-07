@@ -1,14 +1,10 @@
 package forum
 
-import slick.jdbc.H2Profile.api.Database
-import slick.jdbc.PostgresProfile.api._
-import DateTimestampConversion._
-import scala.concurrent.Future
-import java.util.Date
 import scala.language.postfixOps
 import com.typesafe.config.ConfigFactory
 
-object Validation {
+object ContentAndPaginationValidation {
+
     val config = ConfigFactory.load()
     val topicsLimit = config.getInt("page.topicsLimit")
     val mailLimit = config.getInt("page.mailLimit")
@@ -21,7 +17,7 @@ object Validation {
     private def validateContent(content: String) = content.size > 0 && content.size < contentLimit
     private def validateTopic(topic: String) = topic.size > 0 && topic.size < topicLimit
     
-    def validateTopicsPagination(page: Option[Int], limit: Option[Int]) = {
+    def validateAndCorrectTopicsPagination(page: Option[Int], limit: Option[Int]) = {
         val limitVal: Int = limit match {
             case Some(l) if l <= topicsLimit => l
             case _ => topicsLimit
@@ -32,7 +28,7 @@ object Validation {
         }   
         (pageVal, limitVal)
     }
-    def validateAnswersPagination(before: Int, after: Int) = {
+    def validateAndCorrectAnswersPagination(before: Int, after: Int) = {
         def validatePagination = before + after + 1 <= answersLimit
         def correctPagination = {
             val afterRatio = after / (before + after)
