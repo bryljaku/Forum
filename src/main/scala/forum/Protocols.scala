@@ -17,6 +17,7 @@ trait Protocols extends SprayJsonSupport with DefaultJsonProtocol {
     implicit val topicFormat: RootJsonFormat[Topic] = jsonFormat7(Topic)
     implicit val errorMessageFormat: RootJsonFormat[ErrorMessage] = jsonFormat1(ErrorMessage.apply)
     implicit val successMessageFormat: RootJsonFormat[SuccessMessage] = jsonFormat1(SuccessMessage.apply)
+    implicit val createResponseMessage: RootJsonFormat[CreateResponseMessage] = jsonFormat3(CreateResponseMessage)
 
 }
 

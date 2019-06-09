@@ -12,7 +12,7 @@ import akka.http.scaladsl.model.StatusCodes._
 import AnswersService._
 import TopicsService._
 
-class Routes extends Protocols {
+trait Routes extends Protocols {
 
   val route =
     pathPrefix("topics") {
@@ -27,7 +27,7 @@ class Routes extends Protocols {
               (createTopic(t) match {
                 case Some(dbAction) => 
                   onComplete(dbAction) {
-                    case Success((id,secret)) => complete(Created, (SuccessMessage.create, id, secret))
+                    case Success((id,secret)) => complete(Created, CreateResponseMessage(SuccessMessage.create, id, secret))
                     case Failure(ex) => complete(ex.getMessage)
                 }
                 case None => complete(BadRequest, ErrorMessage(ErrorMessage.wrongInput))
@@ -50,7 +50,7 @@ class Routes extends Protocols {
                 entity(as[AnswerInput]) { a =>
                   createAnswer(a, topicId) match {
                     case Some(resp) => onComplete(resp) {
-                      case Success((id, secret)) if secret > 0 => complete((SuccessMessage.create, id, secret))
+                      case Success((id, secret)) if secret > 0 => complete(CreateResponseMessage(SuccessMessage.create, id, secret))
                       case Failure(ex) => complete(ex.getMessage)
                     }
                     case _ => complete(BadRequest, ErrorMessage(ErrorMessage.wrongInput))
@@ -63,7 +63,7 @@ class Routes extends Protocols {
                       case Some(dbAction) => 
                         onComplete(dbAction) {
                           case Success(1) => complete(SuccessMessage.update)
-                          case Success(_) => complete(NotModified, ErrorMessage.wrongInput)
+                          case Success(_) => complete(Unauthorized, ErrorMessage.wrongInput)
                           case Failure(ex) => complete(ex.getMessage)
                         }
                       case None => complete(BadRequest, ErrorMessage(ErrorMessage.wrongUpdate))
@@ -92,7 +92,7 @@ class Routes extends Protocols {
                       case Some(dbAction) => 
                         onComplete(dbAction) {
                           case Success(1) => complete(SuccessMessage.update)
-                          case Success(_) => complete(NotModified, ErrorMessage.wrongInput)
+                          case Success(_) => complete(Unauthorized, ErrorMessage.wrongInput)
                           case Failure(ex) => complete(ex.getMessage)
                         }
                       case None => complete(BadRequest, ErrorMessage(ErrorMessage.wrongUpdate))
