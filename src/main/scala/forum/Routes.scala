@@ -25,11 +25,12 @@ trait Routes extends Protocols {
           post {
             entity(as[TopicInput]) { t =>
               (createTopic(t) match {
-                case Some(dbAction) => 
+                case Some(dbAction) =>
                   onComplete(dbAction) {
-                    case Success((id,secret)) => complete(Created, CreateResponseMessage(SuccessMessage.create, id, secret))
+                    case Success((id, secret)) =>
+                      complete(Created, CreateResponseMessage(SuccessMessage.create, id, secret))
                     case Failure(ex) => complete(ex.getMessage)
-                }
+                  }
                 case None => complete(BadRequest, ErrorMessage(ErrorMessage.wrongInput))
               })
             }
@@ -37,39 +38,43 @@ trait Routes extends Protocols {
       } ~
         pathPrefix(IntNumber) { topicId =>
           pathPrefix("answers") {
-            get {                                   
-                parameters('mid ? 0, 'before ? 0, 'after ? 20) { (mid, before, after) =>
-                complete(findTopicAnswers(topicId, mid, before, after)
-                  .map[ToResponseMarshallable] {
-                    case a: List[Answer] => a
-                    case _ => (NotFound, ErrorMessage(ErrorMessage.findAnswers)) 
-                  })
+            get {
+              parameters('mid ? 0, 'before ? 0, 'after ? 20) {
+                (mid, before, after) =>
+                  complete(findTopicAnswers(topicId, mid, before, after)
+                    .map[ToResponseMarshallable] {
+                      case a: List[Answer] => a
+                      case _ =>  (NotFound, ErrorMessage(ErrorMessage.findAnswers))
+                    })
               }
             } ~
               post {
                 entity(as[AnswerInput]) { a =>
                   createAnswer(a, topicId) match {
-                    case Some(resp) => onComplete(resp) {
-                      case Success((id, secret)) if secret > 0 => complete(CreateResponseMessage(SuccessMessage.create, id, secret))
-                      case Failure(ex) => complete(ex.getMessage)
-                    }
+                    case Some(resp) =>
+                      onComplete(resp) {
+                        case Success((id, secret)) if secret > 0 => 
+                          complete(CreateResponseMessage(SuccessMessage.create, id, secret))
+                        case Failure(ex) => complete(ex.getMessage)
+                      }
                     case _ => complete(BadRequest, ErrorMessage(ErrorMessage.wrongInput))
                   }
                 }
               } ~
-             put {
-                  entity(as[UpdateRequest]) { a =>
-                    (updateAnswer(a) match {
-                      case Some(dbAction) => 
-                        onComplete(dbAction) {
-                          case Success(1) => complete(SuccessMessage.update)
-                          case Success(_) => complete(Unauthorized, ErrorMessage.wrongInput)
-                          case Failure(ex) => complete(ex.getMessage)
-                        }
-                      case None => complete(BadRequest, ErrorMessage(ErrorMessage.wrongUpdate))
+              put {
+                entity(as[UpdateRequest]) { a =>
+                  (updateAnswer(a) match {
+                    case Some(dbAction) =>
+                      onComplete(dbAction) {
+                        case Success(1) => complete(SuccessMessage.update)
+                        case Success(_) => complete(Unauthorized, ErrorMessage.wrongInput)
+                        case Failure(ex) => complete(ex.getMessage)
+                      }
+                    case None =>
+                      complete(BadRequest, ErrorMessage(ErrorMessage.wrongUpdate))
                   })
-                  }
-                } ~
+                }
+              } ~
               delete {
                 entity(as[DeleteRequest]) { a =>
                   complete(deleteAnswer(a).map[ToResponseMarshallable] {
@@ -89,14 +94,15 @@ trait Routes extends Protocols {
                 put {
                   entity(as[UpdateRequest]) { t =>
                     (updateTopic(t) match {
-                      case Some(dbAction) => 
+                      case Some(dbAction) =>
                         onComplete(dbAction) {
                           case Success(1) => complete(SuccessMessage.update)
                           case Success(_) => complete(Unauthorized, ErrorMessage.wrongInput)
                           case Failure(ex) => complete(ex.getMessage)
                         }
-                      case None => complete(BadRequest, ErrorMessage(ErrorMessage.wrongUpdate))
-                  })
+                      case None =>
+                        complete(BadRequest,ErrorMessage(ErrorMessage.wrongUpdate))
+                    })
                   }
                 } ~
                 delete {
@@ -110,5 +116,5 @@ trait Routes extends Protocols {
             }
         }
     } ~
-    complete(NotFound)
+      complete(NotFound)
 }

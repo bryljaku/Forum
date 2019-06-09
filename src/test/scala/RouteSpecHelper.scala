@@ -1,24 +1,18 @@
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model._
-import akka.http.scaladsl.unmarshalling.Unmarshal
-import akka.util.ByteString
 import com.typesafe.config.ConfigFactory
-import scala.concurrent.Future
-import forum.Server._
-import akka.http.scaladsl.unmarshalling.Unmarshal
+import forum.Server.materializer
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import scala.concurrent._
 import scala.util.{ Failure, Success }
 import org.scalatest.concurrent.ScalaFutures
 import akka.http.scaladsl.marshalling.Marshal
-import akka.http.scaladsl.model._
 import ExecutionContext.Implicits.global
 import forum._
 import akka.http.scaladsl.model.HttpMethods._
-import scala.concurrent._
-import scala.concurrent.Await
 import scala.concurrent.duration._
-object RouteSpecHelper extends ScalaFutures {
+
+object RouteSpecHelper extends ScalaFutures with Protocols {
     val config = ConfigFactory.load()
     val url = s"http://${config.getString("app.interface")}:${config.getInt("app.port")}"
   

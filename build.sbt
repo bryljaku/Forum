@@ -1,6 +1,6 @@
 name := "Forum"
 
-version := "0.2"
+version := "0.8"
 scalaVersion := "2.12.8"
 
 
@@ -30,10 +30,6 @@ libraryDependencies ++= Seq(
   // database
   "com.h2database" % "h2" % "latest.integration",
   "org.postgresql" % "postgresql" % "latest.integration",
-// jwt
-  // "com.pauldijou" %% "jwt-spray-json" % "2.1.0",
-  // kebs
-  // "pl.iterators" %% "kebs-spray-json" % "1.6.2",
 )
 
 scalacOptions ++= Seq("-deprecation", "-feature")
