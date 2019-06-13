@@ -13,7 +13,7 @@ object ContentAndPaginationValidation {
     val topicLimit = config.getInt("page.topicLimit")
     
     private def validateNickname(nickname: String) = nickname.size > 0
-    private def validateMail(mail: String) = if ("""(?=[^\s]+)(?=(\w+)@([\w\.]+))""".r.findFirstIn(mail) == None) false else true
+    private def validateMail(mail: String) = !("""(?=[^\s]+)(?=(\w+)@([\w\.]+))""".r.findFirstIn(mail) == None)
     private def validateContent(content: String) = content.size > 0 && content.size < contentLimit
     private def validateTopic(topic: String) = topic.size > 0 && topic.size < topicLimit
     

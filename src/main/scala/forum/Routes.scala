@@ -4,8 +4,7 @@ import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import akka.http.scaladsl.marshalling.ToResponseMarshallable
 import scala.concurrent.ExecutionContext.Implicits.global
 import akka.http.scaladsl.server.Directives._
-import scala.language.implicitConversions
-import scala.language.postfixOps
+import scala.language.{implicitConversions, postfixOps}
 import spray.json._
 import scala.util.{Failure, Success}
 import akka.http.scaladsl.model.StatusCodes._
