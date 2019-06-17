@@ -9,7 +9,7 @@ import scala.language.postfixOps
 import com.typesafe.config.ConfigFactory
 import ContentAndPaginationValidation._
 
-object AnswersService extends DbBase with InputHandler {
+object AnswersService extends BaseService with InputHandler {
   private def answerCheckSecret(id: Int, secret: Int) = answersTable.filter(a => a.id === id && a.secret === secret)
 
   def findTopicAnswers(topicId: Int, mid: Int, before: Int, after: Int) = { 

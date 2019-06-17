@@ -7,14 +7,14 @@ case class Topic(id: Option[Int], nickname: String, mail: String, topic: String,
 case class Answer(id: Option[Int], nickname: String, mail: String, topicID: Int, content: String, lastActivity: Timestamp, secret: Int)
 
 case class TopicInput(nickname: String, mail: String, topic: String, content: String)
-case class AnswerInput(nickname: String, mail: String, topicID: Int, content: String)
+case class AnswerInput(nickname: String, mail: String, content: String)
 
 case class UpdateRequest(id: Int, secret: Int, content: String)
 case class DeleteRequest(id: Int, secret: Int)
 
 case class ErrorMessage(message: String)
 case class SuccessMessage(message: String)
-case class CreateResponseMessage(message: String, id: Int, secret: Int)
+case class ContentCreatedMessage(message: String, id: Int, secret: Int)
 
 object ErrorMessage {
     val wrongInput = "Something is wrong with your input."

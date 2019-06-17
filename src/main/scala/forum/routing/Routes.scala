@@ -27,7 +27,7 @@ trait Routes extends Protocols {
                 case Some(dbAction) =>
                   onComplete(dbAction) {
                     case Success((id, secret)) =>
-                      complete(Created, CreateResponseMessage(SuccessMessage.create, id, secret))
+                      complete(Created, ContentCreatedMessage(SuccessMessage.create, id, secret))
                     case Failure(ex) => complete(ex.getMessage)
                   }
                 case None => complete(BadRequest, ErrorMessage(ErrorMessage.wrongInput))
@@ -53,7 +53,7 @@ trait Routes extends Protocols {
                     case Some(resp) =>
                       onComplete(resp) {
                         case Success((id, secret)) if secret > 0 => 
-                          complete(CreateResponseMessage(SuccessMessage.create, id, secret))
+                          complete(ContentCreatedMessage(SuccessMessage.create, id, secret))
                         case Failure(ex) => complete(ex.getMessage)
                       }
                     case _ => complete(BadRequest, ErrorMessage(ErrorMessage.wrongInput))

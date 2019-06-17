@@ -14,7 +14,7 @@ import slick.jdbc.meta.MTable
 import java.sql.Timestamp
 import scala.math.floor
 
-object InitDatabase extends DbBase {
+object InitializeService extends BaseService {
   def addTopics: Seq[Topic] =
     for (i <- 0 to 10) 
      yield Topic(None, "topicNick" + i, "topicMail" + i + "@e.o", "Tooopic", "Did you..", new Date, i toInt)
@@ -29,7 +29,10 @@ object InitDatabase extends DbBase {
       db.run(DBIO.seq(answersTable.schema.drop, topicsTable.schema.drop))
     }
     Await.result(dropFuture, Duration.Inf).andThen {
-      case Success(_) => createTablesAndInsert
+      case Success(_) => {
+        println("Initialization: Old tables dropped")  
+        createTablesAndInsert
+      }
       case Failure(ex) => {
         println(s"drop failed, exception: $ex")
         createTablesAndInsert
@@ -58,7 +61,7 @@ object InitDatabase extends DbBase {
         db.run(DBIO.seq(topicsTable ++= addTopics, answersTable ++= addAnswers))
     }
     Await.result(queryFuture, Duration.Inf).andThen {
-      case Success(_) => println("querySuccess")
+      case Success(_) => println("Initialization: Topics and answers added")
       case Failure(err) => println(err);
     }
   }

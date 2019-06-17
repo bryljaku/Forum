@@ -19,17 +19,14 @@ class RouteSpec
     with Routes {
 
   "Service" should {
-    
     "topics" should {
       "respond with status OK when adding valid topic" in {
         Post("/topics").withEntity(topicEntity(topicValid)) ~> Route.seal(route) ~> check {
           status shouldBe Created
-          responseAs[CreateResponseMessage]
         }
       }
       "respond with status BadRequest when adding invalid topic" in {
-        Post("/topics").withEntity(topicEntity(topicInvalid)) ~> Route.seal(
-          route) ~> check {
+        Post("/topics").withEntity(topicEntity(topicInvalid)) ~> Route.seal(route) ~> check {
           status shouldBe BadRequest
         }
       }

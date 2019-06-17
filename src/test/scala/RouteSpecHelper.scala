@@ -18,8 +18,8 @@ object RouteSpecHelper extends ScalaFutures with Protocols {
   
     val topicValid = TopicInput("nickname", "mail@St.ring", "topic: String", "content: String")
     val topicInvalid = TopicInput("nickname", "mailSt.ring", "topic: String", "content: String")
-    def answerValid(topicId: Int) = AnswerInput("nickname", "mail@St.ring", topicId, "content: String")
-    def answerInvalid(topicId: Int) = AnswerInput("nickname", "mail@String", topicId, "")
+    def answerValid(topicId: Int) = AnswerInput("nickname", "mail@Str.ing", "content: String")
+    def answerInvalid(topicId: Int) = AnswerInput("nickname", "mail@String.", "content: String")
     def updateRequestValid(id: Int, secret: Int) = UpdateRequest(id, secret, "randomContent")
     def updateRequestInvalid(id: Int, secret: Int) = UpdateRequest(id, secret, "")
     def deleteRequest(id: Int, secret: Int) = DeleteRequest(id, secret)
@@ -30,7 +30,7 @@ object RouteSpecHelper extends ScalaFutures with Protocols {
     def deleteEntity(deleteRequest: DeleteRequest) = Marshal(deleteRequest).to[MessageEntity].futureValue  
     
     def toResponseMessage(response: HttpResponse) = {
-        val messageFuture = Unmarshal(response.entity).to[CreateResponseMessage]
+        val messageFuture = Unmarshal(response.entity).to[ContentCreatedMessage]
         Await.result(messageFuture, 2.second)
     }
 }

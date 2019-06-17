@@ -18,7 +18,7 @@ object Server extends Routes with App {
     val interface = ConfigFactory.load().getString("app.interface")
     val port = ConfigFactory.load().getString("app.port").toInt
     
-    InitDatabase.startDB
+    InitializeService.startDB
     val serverBinding = Http().bindAndHandle(route, interface, port)
 
     println(s"Server online at http://$interface:$port/\n")    

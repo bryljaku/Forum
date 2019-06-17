@@ -8,7 +8,7 @@ import java.util.Date
 import scala.language.postfixOps
 import ContentAndPaginationValidation._
 
-object TopicsService extends DbBase with InputHandler {
+object TopicsService extends BaseService with InputHandler {
     private def topicCheckSecret(id: Int, secret: Int) = topicsTable.filter(t => t.id === id && t.secret === secret)
 
     def findTopics(page: Option[Int], limit: Option[Int]): Future[List[Topic]] = {

@@ -11,9 +11,10 @@ object ContentAndPaginationValidation {
     val answersLimit = config.getInt("page.answersLimit")
     val contentLimit = config.getInt("page.contentLimit")
     val topicLimit = config.getInt("page.topicLimit")
-    
+    private val emailRegex = """^[a-zA-Z0-9\.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$""".r
+
     private def validateNickname(nickname: String) = nickname.size > 0
-    private def validateMail(mail: String) = !("""(?=[^\s]+)(?=(\w+)@([\w\.]+))""".r.findFirstIn(mail) == None)
+    private def validateMail(mail: String) = !(emailRegex.findFirstIn(mail) == None)
     private def validateContent(content: String) = content.size > 0 && content.size < contentLimit
     private def validateTopic(topic: String) = topic.size > 0 && topic.size < topicLimit
     
