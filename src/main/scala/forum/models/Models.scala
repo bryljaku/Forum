@@ -1,10 +1,11 @@
 package forum
 
-import java.sql.Timestamp
+import java.time.ZonedDateTime
 
 
-case class Topic(id: Option[Int], nickname: String, mail: String, topic: String, content: String, lastActivity: Timestamp, secret: Int)
-case class Answer(id: Option[Int], nickname: String, mail: String, topicID: Int, content: String, lastActivity: Timestamp, secret: Int)
+case class Topic(id: Option[Int], nickname: String, mail: String, topic: String, content: String, lastActivity: ZonedDateTime, secret: Int)
+
+case class Answer(id: Option[Int], nickname: String, mail: String, topicID: Int, content: String, lastActivity: ZonedDateTime, secret: Int)
 
 case class TopicInput(nickname: String, mail: String, topic: String, content: String)
 case class AnswerInput(nickname: String, mail: String, content: String)

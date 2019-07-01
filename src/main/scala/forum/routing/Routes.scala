@@ -1,15 +1,14 @@
 package forum
 
-import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import akka.http.scaladsl.marshalling.ToResponseMarshallable
-import scala.concurrent.ExecutionContext.Implicits.global
-import akka.http.scaladsl.server.Directives._
-import scala.language.{implicitConversions, postfixOps}
-import spray.json._
-import scala.util.{Failure, Success}
 import akka.http.scaladsl.model.StatusCodes._
-import AnswersService._
-import TopicsService._
+import akka.http.scaladsl.server.Directives._
+import forum.AnswersService._
+import forum.TopicsService._
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.language.{implicitConversions, postfixOps}
+import scala.util.{Failure, Success}
 
 trait Routes extends Protocols {
 
@@ -17,21 +16,21 @@ trait Routes extends Protocols {
     pathPrefix("topics") {
       pathEndOrSingleSlash {
         get {
-          (parameters('page.as[Int].?, 'limit.as[Int].?)) { (page, limit) =>
+          parameters('page.as[Int].?, 'limit.as[Int].?) { (page, limit) =>
             complete(findTopics(page, limit))
           }
         } ~
           post {
             entity(as[TopicInput]) { t =>
-              (createTopic(t) match {
+              createTopic(t) match {
                 case Some(dbAction) =>
                   onComplete(dbAction) {
                     case Success((id, secret)) =>
                       complete(Created, ContentCreatedMessage(SuccessMessage.create, id, secret))
                     case Failure(ex) => complete(ex.getMessage)
                   }
-                case None => complete(BadRequest, ErrorMessage(ErrorMessage.wrongInput))
-              })
+                case None => complete(BadRequest -> ErrorMessage(ErrorMessage.wrongInput))
+              }
             }
           }
       } ~
@@ -42,9 +41,9 @@ trait Routes extends Protocols {
                 (mid, before, after) =>
                   complete(findTopicAnswers(topicId, mid, before, after)
                     .map[ToResponseMarshallable] {
-                      case a: List[Answer] => a
-                      case _ =>  (NotFound, ErrorMessage(ErrorMessage.findAnswers))
-                    })
+                    case a: List[Answer] => a
+                    case _ => NotFound -> ErrorMessage(ErrorMessage.findAnswers)
+                  })
               }
             } ~
               post {
@@ -52,33 +51,33 @@ trait Routes extends Protocols {
                   createAnswer(a, topicId) match {
                     case Some(resp) =>
                       onComplete(resp) {
-                        case Success((id, secret)) if secret > 0 => 
+                        case Success((id, secret)) if secret > 0 =>
                           complete(ContentCreatedMessage(SuccessMessage.create, id, secret))
                         case Failure(ex) => complete(ex.getMessage)
                       }
-                    case _ => complete(BadRequest, ErrorMessage(ErrorMessage.wrongInput))
+                    case _ => complete(BadRequest -> ErrorMessage(ErrorMessage.wrongInput))
                   }
                 }
               } ~
               put {
                 entity(as[UpdateRequest]) { a =>
-                  (updateAnswer(a) match {
+                  updateAnswer(a) match {
                     case Some(dbAction) =>
                       onComplete(dbAction) {
                         case Success(1) => complete(SuccessMessage.update)
-                        case Success(_) => complete(Unauthorized, ErrorMessage.wrongInput)
+                        case Success(_) => complete(Unauthorized -> ErrorMessage.wrongInput)
                         case Failure(ex) => complete(ex.getMessage)
                       }
                     case None =>
-                      complete(BadRequest, ErrorMessage(ErrorMessage.wrongUpdate))
-                  })
+                      complete(BadRequest -> ErrorMessage(ErrorMessage.wrongUpdate))
+                  }
                 }
               } ~
               delete {
                 entity(as[DeleteRequest]) { a =>
                   complete(deleteAnswer(a).map[ToResponseMarshallable] {
                     case 1 => SuccessMessage(SuccessMessage.delete)
-                    case _ => (Unauthorized, ErrorMessage(ErrorMessage.delete))
+                    case _ => Unauthorized -> ErrorMessage(ErrorMessage.delete)
                   })
                 }
               }
@@ -87,12 +86,12 @@ trait Routes extends Protocols {
               get {
                 complete(findTopic(topicId).map[ToResponseMarshallable] {
                   case Some(t) => t
-                  case _ => (NotFound, ErrorMessage(ErrorMessage.findTopic + topicId))
+                  case _ => NotFound -> ErrorMessage(ErrorMessage.findTopic + topicId)
                 })
               } ~
                 put {
                   entity(as[UpdateRequest]) { t =>
-                    (updateTopic(t) match {
+                    updateTopic(t) match {
                       case Some(dbAction) =>
                         onComplete(dbAction) {
                           case Success(1) => complete(SuccessMessage.update)
@@ -100,20 +99,19 @@ trait Routes extends Protocols {
                           case Failure(ex) => complete(ex.getMessage)
                         }
                       case None =>
-                        complete(BadRequest,ErrorMessage(ErrorMessage.wrongUpdate))
-                    })
+                        complete(BadRequest -> ErrorMessage(ErrorMessage.wrongUpdate))
+                    }
                   }
                 } ~
                 delete {
                   entity(as[DeleteRequest]) { t =>
                     complete(deleteTopic(t).map[ToResponseMarshallable] {
                       case 1 => SuccessMessage(SuccessMessage.delete)
-                      case _ => (Unauthorized, ErrorMessage(ErrorMessage.delete))
+                      case _ => Unauthorized -> ErrorMessage(ErrorMessage.delete)
                     })
                   }
                 }
             }
         }
-    } ~
-      complete(NotFound)
+    }
 }

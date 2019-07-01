@@ -2,11 +2,14 @@ package forum
 
 import java.sql.Timestamp
 import java.util.Date
+
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
+import pl.iterators.kebs.json.KebsSpray
 import spray.json._
+
 import scala.language.implicitConversions
 
-trait Protocols extends SprayJsonSupport with DefaultJsonProtocol {
+trait Protocols extends SprayJsonSupport with DefaultJsonProtocol with KebsSpray {
     implicit val printer = PrettyPrinter
     implicit val timestampFormat: JsonFormat[Timestamp] = jsonFormat[Timestamp](TimestampReader, TimestampWriter)
     implicit val topicInputFormat: RootJsonFormat[TopicInput] = jsonFormat4(TopicInput)

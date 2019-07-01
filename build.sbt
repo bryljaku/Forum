@@ -1,7 +1,7 @@
 name := "Forum"
 
 version := "0.8"
-scalaVersion := "2.12.8"
+scalaVersion := "2.12.7"
 
 
 val akkaVersion = "2.5.23"
@@ -30,6 +30,9 @@ libraryDependencies ++= Seq(
   // database
   "com.h2database" % "h2" % "latest.integration",
   "org.postgresql" % "postgresql" % "latest.integration",
+  // kebs
+  "pl.iterators" %% "kebs-akka-http" % "1.6.2",
+  "pl.iterators" %% "kebs-spray-json" % "1.6.2",
 )
 
 scalacOptions ++= Seq("-deprecation", "-feature")
