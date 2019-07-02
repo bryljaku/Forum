@@ -1,25 +1,28 @@
 package forum
 
-import java.time.ZonedDateTime
-
+import java.sql.Timestamp
 import slick.jdbc.PostgresProfile.api._
 import slick.lifted.ProvenShape
+import pl.iterators.kebs._
 
+object XD extends Kebs with KebsColumnExtensionMethods
 
 class TopicsTable(tag: Tag) extends Table[Topic](tag, "topics") {
-  def * : ProvenShape[Topic] = (id.?, nickname, mail, topic, content, lastActivity, secret) <> ((Topic.apply _).tupled, Topic.unapply)
+  import XD._
+  def id: Rep[Id] = column[Id]("id", O.PrimaryKey)
 
-  def id: Rep[Int] = column[Int]("id", O.PrimaryKey, O.AutoInc)
+  def nickname: Rep[Nickname] = column[Nickname]("nickname")
 
-  def nickname: Rep[String] = column[String]("nickname")
+  def mail: Rep[Mail] = column[Mail]("mail")
 
-  def mail: Rep[String] = column[String]("mail")
+  def topic: Rep[TopicName] = column[TopicName]("topic")
 
-  def topic: Rep[String] = column[String]("topic")
+  def content: Rep[Content] = column[Content]("content")
 
-  def content: Rep[String] = column[String]("content")
+  def lastActivity: Rep[Timestamp] = column[Timestamp]("lastActivity")
 
-  def lastActivity: Rep[ZonedDateTime] = column[ZonedDateTime]("lastActivity")
+  def secret: Rep[Secret] = column[Secret]("secret")
 
-  def secret: Rep[Int] = column[Int]("secret")
+  def * : ProvenShape[Topic] = (id, nickname, mail, topic, content, lastActivity, secret) <> ((Topic.apply _).tupled, Topic.unapply)
+
 }

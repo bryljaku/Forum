@@ -1,27 +1,27 @@
 package forum
 
 
-import java.time.ZonedDateTime
-
+import java.sql.Timestamp
+import pl.iterators.kebs._
 import slick.jdbc.PostgresProfile.api._
 import slick.lifted.{ForeignKeyQuery, ProvenShape}
 
-class AnswersTable(tag: Tag) extends Table[Answer](tag, "answers") {
-  def * : ProvenShape[Answer] = (id.?, nickname, mail, topicID, content, lastActivity, secret) <> ((Answer.apply _).tupled, Answer.unapply)
+class AnswersTable(tag: Tag) extends Table[Answer](tag, "answers") with Kebs {
+  def * : ProvenShape[Answer] = (id, nickname, mail, topicID, content, lastActivity, secret) <> ((Answer.apply _).tupled, Answer.unapply)
 
-  def id: Rep[Int] = column[Int]("id", O.PrimaryKey, O.AutoInc)
+  def id: Rep[Id] = column[Id]("id", O.PrimaryKey)
 
-  def nickname: Rep[String] = column[String]("nickname")
+  def nickname: Rep[Nickname] = column[Nickname]("nickname")
 
-  def mail: Rep[String] = column[String]("mail")
+  def mail: Rep[Mail] = column[Mail]("mail")
 
-  def content: Rep[String] = column[String]("content")
+  def topicID: Rep[Id] = column[Id]("topicID")
 
-  def lastActivity: Rep[ZonedDateTime] = column[ZonedDateTime]("lastActivity")
+  def content: Rep[Content] = column[Content]("content")
 
-  def secret: Rep[Int] = column[Int]("secret")
+  def lastActivity: Rep[Timestamp] = column[Timestamp]("lastActivity")
 
   def topic: ForeignKeyQuery[TopicsTable, Topic] = foreignKey("topic_fk", topicID, TableQuery[TopicsTable])(_.id, onDelete = ForeignKeyAction.Cascade)
 
-  def topicID: Rep[Int] = column[Int]("topicID")
+  def secret: Rep[Secret] = column[Secret]("secret")
 }

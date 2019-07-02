@@ -1,45 +1,36 @@
 package forum
 
-import java.time.ZonedDateTime
-
 import forum.ContentAndPaginationValidation._
+import forum.repositories.AnswersRepository
 import slick.jdbc.PostgresProfile.api._
 
 import scala.concurrent.Future
 import scala.language.postfixOps
+class AnswersService(db: Database, answersRepository: AnswersRepository) extends  AnswersRepository {
 
-object AnswersService extends BaseService with InputHandler {
-  private def answerCheckSecret(id: Int, secret: Int) = answersTable.filter(a => a.id === id && a.secret === secret)
 
-  def findTopicAnswers(topicId: Int, mid: Int, before: Int, after: Int) = {
-    def findAction(topicId: Int, mid: Int, before: Int, after: Int): Future[List[Answer]] =
-      answersTable.filter(_.topicID === topicId).to[List]
-        .sortBy(_.lastActivity.asc)
-        .drop(mid - before)
-        .take(before + 1 + after).result
-
+  def findTopicAnswers(topicId: Id, mid: Int, before: Int, after: Int) = {
     val (beforeVal, afterVal): (Int, Int) = validateAndCorrectAnswersPagination(before, after, mid)
-    findAction(topicId, mid, beforeVal, afterVal)
+    val offset = mid - beforeVal
+    val limit = beforeVal + afterVal + 1
+
+    db.run(answersRepository.findTopicAnswersAction(topicId, offset, limit))
   }
 
-  def findAnswer(answerId: Int): Future[Option[Answer]] = answersTable.filter(_.id === answerId).result.headOption
+  def findAnswer(answerId: Id): Future[Option[Answer]] =
+    db.run(answersRepository.findAnswerAction(answerId))
 
-  def createAnswer(answer: AnswerInput, topicId: Int): Option[Future[(Int, Int)]] = {
-    def insertAction: Future[(Int, Int)] = answersTable returning answersTable.map(x => (x.id, x.secret)) += answerFromInput(answer, topicId)
-
-    if (validateAnswerInput(answer)) Some(insertAction)
+  def createAnswer(answerInput: AnswerInput, topicId: Id): Option[Future[(Id, Secret)]] = {
+    val a = Answer.from(answerInput, topicId)
+    if (validateAnswerInput(answerInput)) Some(db.run(answersRepository.insertAction(a)))
     else None
   }
 
   def updateAnswer(request: UpdateRequest): Option[Future[Int]] = {
-    def updateAction: Future[Int] = answerCheckSecret(request.id, request.secret)
-      .map(a => (a.content, a.lastActivity))
-      .update((request.content, ZonedDateTime.now()))
-
-    if (validateUpdateRequest(request)) Some(updateAction)
+    if (validateUpdateRequest(request)) Some(db.run(answersRepository.updateAction(request)))
     else None
   }
 
-  def deleteAnswer(request: DeleteRequest): Future[Int] = answerCheckSecret(request.id, request.secret).delete
-
+  def deleteAnswer(request: DeleteRequest): Future[Int] =
+    db.run(answersRepository.deleteAnswerAction(request))
 }

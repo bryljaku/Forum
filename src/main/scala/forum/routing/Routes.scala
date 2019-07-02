@@ -1,45 +1,49 @@
 package forum
 
+import java.util.UUID
+
 import akka.http.scaladsl.marshalling.ToResponseMarshallable
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.server.Directives._
-import forum.AnswersService._
-import forum.TopicsService._
+import forum.repositories.{AnswersRepository, TopicsRepository}
+import slick.jdbc.PostgresProfile.api._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.language.{implicitConversions, postfixOps}
 import scala.util.{Failure, Success}
 
-trait Routes extends Protocols {
+class Routes(db: Database) extends Protocols {
+  val topicsRepository = new TopicsRepository
+  val answersRepository = new AnswersRepository
+  val answersService = new AnswersService(db, answersRepository)
+  val topicsService = new TopicsService(db, topicsRepository)
 
   val route =
     pathPrefix("topics") {
       pathEndOrSingleSlash {
         get {
           parameters('page.as[Int].?, 'limit.as[Int].?) { (page, limit) =>
-            complete(findTopics(page, limit))
+            complete(topicsService.findTopics(page, limit))
           }
         } ~
           post {
             entity(as[TopicInput]) { t =>
-              createTopic(t) match {
-                case Some(dbAction) =>
-                  onComplete(dbAction) {
-                    case Success((id, secret)) =>
-                      complete(Created, ContentCreatedMessage(SuccessMessage.create, id, secret))
-                    case Failure(ex) => complete(ex.getMessage)
-                  }
-                case None => complete(BadRequest -> ErrorMessage(ErrorMessage.wrongInput))
+              complete {
+                topicsService.createTopic(t).map[ToResponseMarshallable] {
+                  case Right(x) => x
+                  case Left(e) => BadRequest -> e
+                }
               }
             }
           }
       } ~
-        pathPrefix(IntNumber) { topicId =>
+        pathPrefix(Segment) { x =>
+          val topicId = Id(UUID.fromString(x))
           pathPrefix("answers") {
             get {
               parameters('mid ? 0, 'before ? 0, 'after ? 20) {
                 (mid, before, after) =>
-                  complete(findTopicAnswers(topicId, mid, before, after)
+                  complete(answersService.findTopicAnswers(topicId, mid, before, after)
                     .map[ToResponseMarshallable] {
                     case a: List[Answer] => a
                     case _ => NotFound -> ErrorMessage(ErrorMessage.findAnswers)
@@ -48,10 +52,10 @@ trait Routes extends Protocols {
             } ~
               post {
                 entity(as[AnswerInput]) { a =>
-                  createAnswer(a, topicId) match {
+                  answersService.createAnswer(a, topicId) match {
                     case Some(resp) =>
                       onComplete(resp) {
-                        case Success((id, secret)) if secret > 0 =>
+                        case Success((id, secret)) =>
                           complete(ContentCreatedMessage(SuccessMessage.create, id, secret))
                         case Failure(ex) => complete(ex.getMessage)
                       }
@@ -61,7 +65,7 @@ trait Routes extends Protocols {
               } ~
               put {
                 entity(as[UpdateRequest]) { a =>
-                  updateAnswer(a) match {
+                  answersService.updateAnswer(a) match {
                     case Some(dbAction) =>
                       onComplete(dbAction) {
                         case Success(1) => complete(SuccessMessage.update)
@@ -75,7 +79,7 @@ trait Routes extends Protocols {
               } ~
               delete {
                 entity(as[DeleteRequest]) { a =>
-                  complete(deleteAnswer(a).map[ToResponseMarshallable] {
+                  complete(answersService.deleteAnswer(a).map[ToResponseMarshallable] {
                     case 1 => SuccessMessage(SuccessMessage.delete)
                     case _ => Unauthorized -> ErrorMessage(ErrorMessage.delete)
                   })
@@ -84,14 +88,14 @@ trait Routes extends Protocols {
           } ~
             pathEndOrSingleSlash {
               get {
-                complete(findTopic(topicId).map[ToResponseMarshallable] {
+                complete(topicsService.findTopic(topicId).map[ToResponseMarshallable] {
                   case Some(t) => t
                   case _ => NotFound -> ErrorMessage(ErrorMessage.findTopic + topicId)
                 })
               } ~
                 put {
                   entity(as[UpdateRequest]) { t =>
-                    updateTopic(t) match {
+                    topicsService.updateTopic(t) match {
                       case Some(dbAction) =>
                         onComplete(dbAction) {
                           case Success(1) => complete(SuccessMessage.update)
@@ -105,7 +109,7 @@ trait Routes extends Protocols {
                 } ~
                 delete {
                   entity(as[DeleteRequest]) { t =>
-                    complete(deleteTopic(t).map[ToResponseMarshallable] {
+                    complete(topicsService.deleteTopic(t).map[ToResponseMarshallable] {
                       case 1 => SuccessMessage(SuccessMessage.delete)
                       case _ => Unauthorized -> ErrorMessage(ErrorMessage.delete)
                     })

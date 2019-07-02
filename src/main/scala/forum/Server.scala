@@ -9,7 +9,7 @@ import slick.jdbc.H2Profile.api.Database
 import scala.io.StdIn.readLine
 
 
-object Server extends Routes with App {
+object Server extends App {
   val db: Database = Database.forConfig("postgres")
 
   implicit val system: ActorSystem = ActorSystem("Forum")
@@ -19,8 +19,10 @@ object Server extends Routes with App {
   val config = ConfigFactory.load()
   val interface = config.getString("app.interface")
   val port = config.getString("app.port").toInt
+  val routes = new Routes(db)
 
-  InitializeService.startDB
+  val route = routes.route
+//  InitializeService.startDB
   val serverBinding = Http().bindAndHandle(route, interface, port)
 
   println(s"Server online at http://$interface:$port/\n")

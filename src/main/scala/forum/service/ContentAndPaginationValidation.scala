@@ -47,17 +47,17 @@ object ContentAndPaginationValidation {
     validateMail(answer.mail) && validateContent(answer.content) && validateNickname(answer.nickname)
   }
 
-  private def validateNickname(nickname: String) = nickname.size > 0
+  private def validateNickname(nickname: Nickname) = nickname.nickname.length > 0
 
-  private def validateMail(mail: String) = emailRegex.findFirstIn(mail) != None
+  private def validateMail(mail: Mail) = emailRegex.findFirstIn(mail.mail).isDefined
 
-  private def validateContent(content: String) = content.length > 0 && content.length < contentLimit
+  private def validateContent(content: Content) = content.content.length > 0 && content.content.length < contentLimit
 
   def validateTopicInput(topic: TopicInput) = {
     validateMail(topic.mail) && validateContent(topic.content) && validateTopic(topic.topic) && validateNickname(topic.nickname)
   }
 
-  private def validateTopic(topic: String) = topic.length > 0 && topic.length < topicLimit
+  private def validateTopic(topic: TopicName) = topic.topicName.length > 0 && topic.topicName.length < topicLimit
 
   def validateUpdateRequest(request: UpdateRequest) = {
     validateContent(request.content)
