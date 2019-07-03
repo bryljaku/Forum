@@ -1,11 +1,12 @@
 package forum.schemas
-import forum.models._
+import forum.models.{Protocols, _}
 import java.sql.Timestamp
+
 import slick.jdbc.PostgresProfile.api._
 import slick.lifted.ProvenShape
 import pl.iterators.kebs._
 
-object XD extends Kebs with KebsColumnExtensionMethods
+object XD extends Kebs with KebsColumnExtensionMethods with Protocols
 
 class TopicsTable(tag: Tag) extends Table[Topic](tag, "topics") {
   import XD._

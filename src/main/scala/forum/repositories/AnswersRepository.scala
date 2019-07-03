@@ -2,17 +2,15 @@ package forum.repositories
 
 import java.time.ZonedDateTime
 
-import forum.models._
-import forum.routing.Protocols
+import forum.models.{Protocols, _}
 import forum.schemas.AnswersTable
 import slick.dbio.DBIO
 import slick.lifted.TableQuery
 import slick.jdbc.PostgresProfile.api._
 import pl.iterators.kebs._
-import forum.routing.DateTimestampConversion._
+import forum.models.DateTimestampConversion._
 
-class AnswersRepository extends Kebs with Protocols {
-  import pl.iterators.kebs._
+class AnswersRepository {
   private val answersTable = TableQuery[AnswersTable]
 
   private def answerCheckSecret(id: Id, secret: Secret) =

@@ -1,9 +1,9 @@
-package forum.routing
+package forum.models
 
 import java.sql.Timestamp
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import java.util.Date
+import java.util.{Date, UUID}
 
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import pl.iterators.kebs.json.KebsSpray
@@ -17,7 +17,14 @@ trait Protocols extends SprayJsonSupport with DefaultJsonProtocol with KebsSpray
   implicit val printer = PrettyPrinter
   implicit val timestampFormat: JsonFormat[Timestamp] = jsonFormat[Timestamp](TimestampReader, TimestampWriter)
 
+  implicit val uuidFormat: JsonFormat[UUID] {} = new JsonFormat[UUID] {
+    override def write(obj: UUID): JsValue = JsString(obj.toString)
 
+    override def read(json: JsValue): UUID = json match {
+      case JsString(uuid) => Try(UUID.fromString(uuid)).getOrElse(deserializationError("Expected UUID format"))
+      case _              => deserializationError("Expected UUID format")
+    }
+  }
   implicit val zonedDateTimeFormat = new JsonFormat[ZonedDateTime] {
     override def read(json: JsValue): ZonedDateTime = {
       json match {
@@ -37,7 +44,6 @@ object DateTimestampConversion {
   implicit def dateToTimestamp(date: Date): Timestamp = new Timestamp(date.getTime)
   implicit def zonedToTimestamp(date: ZonedDateTime): Timestamp = new Timestamp(date.getNano)
 }
-
 
 object TimestampReader extends RootJsonReader[Timestamp] {
   import DateTimestampConversion._

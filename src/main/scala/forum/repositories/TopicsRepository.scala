@@ -8,8 +8,9 @@ import slick.dbio.DBIO
 import slick.lifted.TableQuery
 import slick.jdbc.PostgresProfile.api._
 import pl.iterators.kebs._
-import forum.routing.DateTimestampConversion._
-class TopicsRepository extends Kebs {
+import DateTimestampConversion._
+
+class TopicsRepository {
   val topicsTable = TableQuery[TopicsTable]
 
   private def topicCheckSecret(id: Id, secret: Secret) =

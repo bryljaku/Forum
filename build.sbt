@@ -4,11 +4,11 @@ version := "0.8"
 scalaVersion := "2.12.7"
 
 
-val akkaVersion = "2.5.23"
-val akkaHttpVersion = "10.1.8"
+val akkaVersion = "2.5.11"
+val akkaHttpVersion = "10.1.1"
 val scalaTestVersion = "3.0.7"
-val slickVersion = "3.2.3"
-val sprayVersion = "1.3.5"
+val slickVersion = "3.2.2"
+val sprayVersion = "1.3.4"
 libraryDependencies ++= Seq(
   "org.slf4j" % "slf4j-simple" % "latest.integration",
   // slick

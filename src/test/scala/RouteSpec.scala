@@ -4,19 +4,26 @@ import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import akka.http.scaladsl.model.ContentTypes._
-import akka.http.scaladsl.model.{HttpResponse, HttpRequest}
+import akka.http.scaladsl.model.{HttpRequest, HttpResponse}
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import org.scalatest._
 import RouteSpecHelper._
 import akka.http.scaladsl.server._
+import forum.Server.db
 import forum._
+import forum.models.{Answer, Protocols, Secret}
+import forum.repositories.{AnswersRepository, TopicsRepository}
+import forum.routes.Routes
+import forum.services.{AnswersService, TopicsService}
 
 class RouteSpec
     extends WordSpec
     with Matchers
     with ScalatestRouteTest
-    with Routes {
+    with Protocols
+   {
+
 
   "Service" should {
     "topics" should {
@@ -52,13 +59,13 @@ class RouteSpec
         }
         "respond with status Unauthorized when updating topic with wrong secret" in {
           Put(s"/topics/$topicId").withEntity(
-            updateEntity(updateRequestValid(topicId, 1))) ~> route ~> check {
+            updateEntity(updateRequestValid(topicId, Secret(1)))) ~> route ~> check {
             status shouldBe Unauthorized
           }
         }
         "respond with status Unauthorized when deleting topic with wrong secret" in {
           Delete(s"/topics/$topicId").withEntity(
-            deleteEntity(deleteRequest(topicId, 1))) ~> route ~> check {
+            deleteEntity(deleteRequest(topicId, Secret(1)))) ~> route ~> check {
             status shouldBe Unauthorized
           }
         }
@@ -114,13 +121,13 @@ class RouteSpec
           }
           "respond with status Unauthorized when updating answer with wrong secret" in {
             Delete(s"/topics/$topicId/answers").withEntity(updateEntity(
-              updateRequestValid(answerId, 1))) ~> route ~> check {
+              updateRequestValid(answerId, Secret(1)))) ~> route ~> check {
               status shouldBe Unauthorized
             }
           }
           "respond with status Unauthorized when deleting answer with wrong secret" in {
             Delete(s"/topics/$topicId/answers").withEntity(
-              deleteEntity(deleteRequest(answerId, 1))) ~> route ~> check {
+              deleteEntity(deleteRequest(answerId, Secret(1)))) ~> route ~> check {
               status shouldBe Unauthorized
           }
           }

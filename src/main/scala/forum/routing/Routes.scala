@@ -2,14 +2,13 @@ package forum.routes
 
 import java.util.UUID
 
-import forum.models._
+import forum.models.{Protocols, _}
 import akka.http.scaladsl.marshalling.ToResponseMarshallable
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.server.Directives._
-import forum.routing.Protocols
 import slick.jdbc.PostgresProfile.api._
 import forum.services._
-
+import pl.iterators.kebs.unmarshallers._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.language.{implicitConversions, postfixOps}
 
@@ -19,14 +18,14 @@ class Routes(db: Database, topicsService: TopicsService, answersService: Answers
       pathEndOrSingleSlash {
         get {
           parameters('page.as[Int].?, 'limit.as[Int].?) { (page, limit) =>
-            complete(topicsService.findTopics(page, limit))
+            complete(topicsService.findTopics(page, limit).map[ToResponseMarshallable](_ => OK))
           }
         } ~
           post {
             entity(as[TopicInput]) { t =>
               complete {
                 topicsService.createTopic(t).map[ToResponseMarshallable] {
-                  case Right(x) => x
+                  case Right(x) => OK -> x
                   case Left(e) => BadRequest -> e
                 }
               }
@@ -52,7 +51,7 @@ class Routes(db: Database, topicsService: TopicsService, answersService: Answers
                 entity(as[AnswerInput]) { a =>
                   complete {
                     answersService.createAnswer(a, topicId).map[ToResponseMarshallable] {
-                      case Right(x) => x
+                      case Right(x) => OK -> x
                       case Left(e) => BadRequest -> e
                     }
                   }
