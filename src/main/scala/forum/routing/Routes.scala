@@ -83,7 +83,7 @@ class Routes(db: Database, topicsService: TopicsService, answersService: Answers
               get {
                 complete(topicsService.findTopic(topicId).map[ToResponseMarshallable] {
                   case Right(t) => OK -> t
-                  case Left(e) => NotFound -> ErrorMessage(ErrorMessage.findTopic + topicId)
+                  case Left(e) => NotFound -> e
                 })
               } ~
                 put {
