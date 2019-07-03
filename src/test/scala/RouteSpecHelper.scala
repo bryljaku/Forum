@@ -5,14 +5,11 @@ import forum.Server.{db, materializer}
 import akka.http.scaladsl.unmarshalling.Unmarshal
 
 import scala.concurrent._
-import scala.util.{Failure, Success}
 import org.scalatest.concurrent.ScalaFutures
 import akka.http.scaladsl.marshalling.Marshal
 import forum.models.{AnswerInput, Content, CreatedResponse, DeleteRequest, Id, Mail, Nickname, Protocols, Secret, TopicInput, TopicName, UpdateRequest}
 
 import ExecutionContext.Implicits.global
-import forum._
-import akka.http.scaladsl.model.HttpMethods._
 import forum.repositories.{AnswersRepository, TopicsRepository}
 import forum.routes.Routes
 import forum.services.{AnswersService, TopicsService}

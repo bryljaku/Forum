@@ -18,7 +18,7 @@ class Routes(db: Database, topicsService: TopicsService, answersService: Answers
       pathEndOrSingleSlash {
         get {
           parameters('page.as[Int].?, 'limit.as[Int].?) { (page, limit) =>
-            complete(topicsService.findTopics(page, limit).map[ToResponseMarshallable](_ => OK))
+            complete(topicsService.findTopics(page, limit))
           }
         } ~
           post {

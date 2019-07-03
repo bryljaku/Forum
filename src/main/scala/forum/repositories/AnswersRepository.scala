@@ -11,10 +11,10 @@ import pl.iterators.kebs._
 import forum.models.DateTimestampConversion._
 
 class AnswersRepository {
-  private val answersTable = TableQuery[AnswersTable]
+  val answersTable = TableQuery[AnswersTable]
 
   private def answerCheckSecret(id: Id, secret: Secret) =
-    answersTable.filter(a => a.id === id && a.secret == secret)
+    answersTable.filter(a => a.id === id && a.secret === secret)
 
   def findTopicAnswers(topicId: Id, offset: Int, limit: Int): DBIO[Seq[Answer]] =
     answersTable.filter(_.topicID === topicId)

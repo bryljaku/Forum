@@ -28,6 +28,9 @@ object Server extends App {
   val routes = new Routes(db, topicsService, answersService)
 
   val route = routes.route
+
+  val initializer = new InitializeService(db, topicsRepository, answersRepository)
+  initializer.startDB
   val serverBinding = Http().bindAndHandle(route, interface, port)
 
   println(s"Server online at http://$interface:$port/\n")
