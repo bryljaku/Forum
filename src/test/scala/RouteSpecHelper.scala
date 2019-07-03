@@ -3,13 +3,17 @@ import akka.http.scaladsl.model._
 import com.typesafe.config.ConfigFactory
 import forum.Server.materializer
 import akka.http.scaladsl.unmarshalling.Unmarshal
+
 import scala.concurrent._
-import scala.util.{ Failure, Success }
+import scala.util.{Failure, Success}
 import org.scalatest.concurrent.ScalaFutures
 import akka.http.scaladsl.marshalling.Marshal
+
 import ExecutionContext.Implicits.global
 import forum._
 import akka.http.scaladsl.model.HttpMethods._
+import forum.routing.Protocols
+
 import scala.concurrent.duration._
 
 object RouteSpecHelper extends ScalaFutures with Protocols {

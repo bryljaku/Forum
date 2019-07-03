@@ -1,4 +1,4 @@
-package forum
+package forum.models
 
 import java.util.UUID
 
@@ -8,5 +8,7 @@ case class TopicName(topicName: String) extends AnyVal
 case class Mail(mail: String) extends AnyVal
 case class Content(content: String) extends AnyVal
 case class Secret(secret: Int) extends AnyVal
+
+
 
 

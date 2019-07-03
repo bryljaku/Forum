@@ -1,8 +1,8 @@
-package forum
+package forum.models
 
 import java.sql.Timestamp
 import java.time.ZonedDateTime
-import DateTimestampConversion._
+import forum.routing.DateTimestampConversion._
 import Generator._
 
 

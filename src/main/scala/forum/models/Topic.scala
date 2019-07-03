@@ -1,9 +1,9 @@
-package forum
+package forum.models
 
 import java.sql.Timestamp
 import java.time.ZonedDateTime
-import DateTimestampConversion._
-import Generator._
+import forum.models.Generator._
+import forum.routing.DateTimestampConversion._
 
 case class Topic(id: Id, nickname: Nickname, mail: Mail, topic: TopicName, content: Content, lastActivity: Timestamp, secret: Secret)
 case class TopicInput(nickname: Nickname, mail: Mail, topic: TopicName, content: Content)

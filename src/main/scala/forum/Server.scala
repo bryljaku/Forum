@@ -7,7 +7,9 @@ import com.typesafe.config.ConfigFactory
 import slick.jdbc.H2Profile.api.Database
 
 import scala.io.StdIn.readLine
-
+import forum.services.{TopicsService, AnswersService}
+import forum.repositories.{TopicsRepository, AnswersRepository}
+import forum.routes.Routes
 
 object Server extends App {
   val db: Database = Database.forConfig("postgres")
@@ -19,10 +21,13 @@ object Server extends App {
   val config = ConfigFactory.load()
   val interface = config.getString("app.interface")
   val port = config.getString("app.port").toInt
-  val routes = new Routes(db)
+  val answersRepository = new AnswersRepository
+  val topicsRepository = new TopicsRepository
+  val topicsService = new TopicsService(db, topicsRepository)
+  val answersService = new AnswersService(db, answersRepository)
+  val routes = new Routes(db, topicsService, answersService)
 
   val route = routes.route
-//  InitializeService.startDB
   val serverBinding = Http().bindAndHandle(route, interface, port)
 
   println(s"Server online at http://$interface:$port/\n")

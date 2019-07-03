@@ -1,13 +1,14 @@
-package forum
+package forum.routing
 
 import java.sql.Timestamp
-import java.time.format.DateTimeFormatter
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Date
 
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import pl.iterators.kebs.json.KebsSpray
 import spray.json._
+
 import scala.language.implicitConversions
 import scala.util.Try
 

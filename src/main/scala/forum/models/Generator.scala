@@ -1,4 +1,4 @@
-package forum
+package forum.models
 
 import java.util.UUID
 import scala.util.Random

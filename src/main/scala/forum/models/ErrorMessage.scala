@@ -1,4 +1,4 @@
-package forum
+package forum.models
 
 case class ErrorMessage(message: String) extends AnyVal
 
@@ -9,4 +9,5 @@ object ErrorMessage {
   val update = "Unable to update. Check your secret and try again"
   val findAnswers = "Couldn't find answers for topic with given Id"
   val findTopic = "Couldn't find topic"
+  val databaseError = "Something bad happened to database. Try again later!"
 }

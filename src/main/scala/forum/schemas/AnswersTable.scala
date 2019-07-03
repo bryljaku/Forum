@@ -1,6 +1,6 @@
-package forum
+package forum.schemas
 
-
+import forum.models._
 import java.sql.Timestamp
 import pl.iterators.kebs._
 import slick.jdbc.PostgresProfile.api._

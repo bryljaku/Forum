@@ -1,23 +1,19 @@
-package forum
+package forum.routes
 
 import java.util.UUID
 
+import forum.models._
 import akka.http.scaladsl.marshalling.ToResponseMarshallable
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.server.Directives._
-import forum.repositories.{AnswersRepository, TopicsRepository}
+import forum.routing.Protocols
 import slick.jdbc.PostgresProfile.api._
+import forum.services._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.language.{implicitConversions, postfixOps}
-import scala.util.{Failure, Success}
 
-class Routes(db: Database) extends Protocols {
-  val topicsRepository = new TopicsRepository
-  val answersRepository = new AnswersRepository
-  val answersService = new AnswersService(db, answersRepository)
-  val topicsService = new TopicsService(db, topicsRepository)
-
+class Routes(db: Database, topicsService: TopicsService, answersService: AnswersService) extends Protocols {
   val route =
     pathPrefix("topics") {
       pathEndOrSingleSlash {
@@ -43,76 +39,71 @@ class Routes(db: Database) extends Protocols {
             get {
               parameters('mid ? 0, 'before ? 0, 'after ? 20) {
                 (mid, before, after) =>
-                  complete(answersService.findTopicAnswers(topicId, mid, before, after)
-                    .map[ToResponseMarshallable] {
-                    case a: List[Answer] => a
-                    case _ => NotFound -> ErrorMessage(ErrorMessage.findAnswers)
-                  })
+                  complete{
+                    answersService.findTopicAnswers(topicId, mid, before, after)
+                      .map[ToResponseMarshallable] {
+                      case Right(s) => OK -> s
+                      case Left(e) => NotFound -> e
+                    }
+                  }
               }
             } ~
               post {
                 entity(as[AnswerInput]) { a =>
-                  answersService.createAnswer(a, topicId) match {
-                    case Some(resp) =>
-                      onComplete(resp) {
-                        case Success((id, secret)) =>
-                          complete(ContentCreatedMessage(SuccessMessage.create, id, secret))
-                        case Failure(ex) => complete(ex.getMessage)
-                      }
-                    case _ => complete(BadRequest -> ErrorMessage(ErrorMessage.wrongInput))
+                  complete {
+                    answersService.createAnswer(a, topicId).map[ToResponseMarshallable] {
+                      case Right(x) => x
+                      case Left(e) => BadRequest -> e
+                    }
                   }
                 }
               } ~
               put {
                 entity(as[UpdateRequest]) { a =>
-                  answersService.updateAnswer(a) match {
-                    case Some(dbAction) =>
-                      onComplete(dbAction) {
-                        case Success(1) => complete(SuccessMessage.update)
-                        case Success(_) => complete(Unauthorized -> ErrorMessage.wrongInput)
-                        case Failure(ex) => complete(ex.getMessage)
-                      }
-                    case None =>
-                      complete(BadRequest -> ErrorMessage(ErrorMessage.wrongUpdate))
+                  complete {
+                    answersService.updateAnswer(a).map[ToResponseMarshallable] {
+                      case Right(s) => OK -> s
+                      case Left(e) => BadRequest -> e
+                    }
                   }
                 }
               } ~
               delete {
                 entity(as[DeleteRequest]) { a =>
-                  complete(answersService.deleteAnswer(a).map[ToResponseMarshallable] {
-                    case 1 => SuccessMessage(SuccessMessage.delete)
-                    case _ => Unauthorized -> ErrorMessage(ErrorMessage.delete)
-                  })
+                  complete {
+                    answersService.deleteAnswer(a).map[ToResponseMarshallable] {
+                      case Right(s) => OK -> s
+                      case Left(e) => BadRequest -> e
+                    }
+                  }
                 }
               }
           } ~
             pathEndOrSingleSlash {
               get {
                 complete(topicsService.findTopic(topicId).map[ToResponseMarshallable] {
-                  case Some(t) => t
-                  case _ => NotFound -> ErrorMessage(ErrorMessage.findTopic + topicId)
+                  case Right(t) => OK -> t
+                  case Left(e) => NotFound -> ErrorMessage(ErrorMessage.findTopic + topicId)
                 })
               } ~
                 put {
                   entity(as[UpdateRequest]) { t =>
-                    topicsService.updateTopic(t) match {
-                      case Some(dbAction) =>
-                        onComplete(dbAction) {
-                          case Success(1) => complete(SuccessMessage.update)
-                          case Success(_) => complete(Unauthorized, ErrorMessage.wrongInput)
-                          case Failure(ex) => complete(ex.getMessage)
-                        }
-                      case None =>
-                        complete(BadRequest -> ErrorMessage(ErrorMessage.wrongUpdate))
+                    complete {
+                      topicsService.updateTopic(t).map[ToResponseMarshallable] {
+                        case Right(s) => OK -> s
+                        case Left(e) => BadRequest -> e
+                      }
                     }
                   }
                 } ~
                 delete {
                   entity(as[DeleteRequest]) { t =>
-                    complete(topicsService.deleteTopic(t).map[ToResponseMarshallable] {
-                      case 1 => SuccessMessage(SuccessMessage.delete)
-                      case _ => Unauthorized -> ErrorMessage(ErrorMessage.delete)
-                    })
+                    complete {
+                      topicsService.deleteTopic(t).map[ToResponseMarshallable] {
+                        case Right(s) => OK -> s
+                        case Left(e) => BadRequest -> e
+                      }
+                    }
                   }
                 }
             }
