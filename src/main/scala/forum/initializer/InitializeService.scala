@@ -36,6 +36,8 @@ class InitializeService(db: Database, topicsRepository: TopicsRepository, answer
         val names = v.map(mt => mt.name.name)
         val createIfNotExist = tables.filter(table =>
           !names.contains(table.baseTableRow.tableName)).map(_.schema.create)
+
+        println(s"created tables $createIfNotExist")
         db.run(DBIO.sequence(createIfNotExist))
       })
     }

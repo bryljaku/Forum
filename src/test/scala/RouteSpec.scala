@@ -17,7 +17,19 @@ class RouteSpec
     with Protocols {
 
   def waitForIt[A](f: Future[A]): A = Await.result(f, Duration.Inf)
+  val topic = Topic.from(topicValid)
+  val topicSecret = topic.secret
+  val topicId = topic.id
+  val to = topicId
+  waitForIt(db.run(topicsRepository.addTopic(topic)))
 
+  val answer = Answer.from(answerValid, topicId)
+  val answerId = answer.id
+  val answerSecret = answer.secret
+  waitForIt(db.run(answersRepository.addAnswer(answer)))
+
+  for (i <- 1 to 4)
+    waitForIt(db.run(answersRepository.addAnswer(Answer.from(answerValid, topicId))))
   "topics" should "respond with status OK when adding valid topic" in {
     Post("/topics", topicEntity(topicValid)) ~> Route.seal(route) ~> check {
       status shouldBe OK
@@ -39,19 +51,6 @@ class RouteSpec
       status shouldBe NotFound
     }
   }
-  val topic = Topic.from(topicValid)
-  val topicSecret = topic.secret
-  val topicId = topic.id
-  val to = topicId
-  waitForIt(db.run(topicsRepository.addTopic(topic)))
-
-  val answer = Answer.from(answerValid, topicId)
-  val answerId = answer.id
-  val answerSecret = answer.secret
-  waitForIt(db.run(answersRepository.addAnswer(answer)))
-
-  for (i <- 1 to 4)
-    waitForIt(db.run(answersRepository.addAnswer(Answer.from(answerValid, topicId))))
 
   "topics" should "respond with status OK when updating topic" in {
     Put(s"/topics/$topicId", updateEntity(

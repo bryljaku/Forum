@@ -27,6 +27,7 @@ libraryDependencies ++= Seq(
   "io.spray" %% "spray-json" % sprayVersion,
   // database
   "org.postgresql" % "postgresql" % "latest.integration",
+  "org.flywaydb" % "flyway-core" % "5.0.7",
   // kebs
   "pl.iterators" %% "kebs-akka-http" % kebsVersion,
   "pl.iterators" %% "kebs-spray-json" % kebsVersion,
