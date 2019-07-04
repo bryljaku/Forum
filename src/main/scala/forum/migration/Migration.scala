@@ -9,11 +9,17 @@ class Migration {
   private val flyway = new Flyway
   flyway.setDataSource(config.getString("postgres.url"), config.getString("postgres.user"), config.getString("postgres.password"))
 
-  def migrate  = flyway.migrate()
+  def migrate  = {
+    println("migrate")
+    flyway.migrate()
+  }
 
-  def reloadSchema = {
+  def clean() ={
+    println("clean")
     flyway.clean()
-    println("clean done")
+  }
+  def reloadSchema = {
+    clean
     migrate
   }
 }
