@@ -11,7 +11,7 @@ import scala.language.postfixOps
 
 class TopicsService(db: Database, topicsRepository: TopicsRepository) {
 
-  def findTopics(page: Option[Int], limit: Option[Int]): Future[List[Topic]] = {
+  def findTopics(page: Option[Int], limit: Option[Int]): Future[Seq[Topic]] = {
     val (pageVal, limitVal): (Int, Int) = validateAndCorrectTopicsPagination(page, limit)
     val offset = pageVal * limitVal
     db.run(topicsRepository.findTopics(offset, limitVal))

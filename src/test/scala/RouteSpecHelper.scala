@@ -30,8 +30,8 @@ object RouteSpecHelper extends ScalaFutures with Protocols {
 
     val topicValid = TopicInput(Nickname("nickname"), Mail("mail@St.ring"), TopicName("topic: String"), Content("content: String"))
     val topicInvalid = TopicInput(Nickname("nickname"), Mail("mailSt.ring"), TopicName("topic: String"), Content("content: String"))
-    def answerValid(topicId: Id) = AnswerInput(Nickname("nickname"), Mail("mail@Str.ing"), Content("content: String"))
-    def answerInvalid(topicId: Id) = AnswerInput(Nickname("nickname"), Mail("mail@String."), Content("content: String"))
+    def answerValid = AnswerInput(Nickname("nickname"), Mail("mail@Str.ing"), Content("content: String"))
+    def answerInvalid = AnswerInput(Nickname("nickname"), Mail("mail@String."), Content("content: String"))
     def updateRequestValid(id: Id, secret: Secret) = UpdateRequest(id, secret, Content("randomContent"))
     def updateRequestInvalid(id: Id, secret: Secret) = UpdateRequest(id, secret, Content(""))
     def deleteRequest(id: Id, secret: Secret) = DeleteRequest(id, secret)
