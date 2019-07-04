@@ -19,7 +19,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
  last_activity timestamp without time zone,
  secret integer not null,
 
--- constraint answers_topics_id_fkey foreign key (topic_id)
--- references topics(id)
--- ON UPDATE CASCADE ON DELETE CASCADE
+ constraint answers_topics_id_fkey foreign key (topic_id)
+ references topics(id)
+ ON UPDATE CASCADE ON DELETE CASCADE
  );
