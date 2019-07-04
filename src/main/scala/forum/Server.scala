@@ -5,13 +5,14 @@ import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
 import com.typesafe.config.ConfigFactory
 import slick.jdbc.H2Profile.api.Database
-
 import scala.io.StdIn.readLine
 import forum.services.{TopicsService, AnswersService}
 import forum.repositories.{TopicsRepository, AnswersRepository}
 import forum.routes.Routes
 
 object Server extends App {
+
+
   val db: Database = Database.forConfig("postgres")
 
   implicit val system: ActorSystem = ActorSystem("Forum")
@@ -21,6 +22,7 @@ object Server extends App {
   val config = ConfigFactory.load()
   val interface = config.getString("app.interface")
   val port = config.getString("app.port").toInt
+
   val answersRepository = new AnswersRepository
   val topicsRepository = new TopicsRepository
   val topicsService = new TopicsService(db, topicsRepository)
