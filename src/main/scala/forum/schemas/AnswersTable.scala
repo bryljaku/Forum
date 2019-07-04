@@ -21,7 +21,7 @@ class AnswersTable(tag: Tag) extends Table[Answer](tag, "answers") with Kebs {
 
   def lastActivity: Rep[Timestamp] = column[Timestamp]("last_activity")
 
-//  def topic: ForeignKeyQuery[TopicsTable, Topic] = foreignKey("topic_fk", topicID, TableQuery[TopicsTable])(_.id, onDelete = ForeignKeyAction.Cascade)
-
   def secret: Rep[Secret] = column[Secret]("secret")
+
+  def topic_fk: ForeignKeyQuery[TopicsTable, Topic] = foreignKey("answers_topics_id_fkey", topicID, TableQuery[TopicsTable])(_.id, onDelete = ForeignKeyAction.Cascade)
 }

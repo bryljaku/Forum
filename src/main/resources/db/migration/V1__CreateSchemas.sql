@@ -1,15 +1,15 @@
 
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
  create table topics (
  id uuid primary key,
  nickname varchar not null,
  mail varchar not null,
- topic varchar unique not null,
+ topic varchar not null,
  content varchar not null,
  last_activity timestamp without time zone,
  secret integer not null
  );
- 
+
  create table answers (
  id uuid primary key,
  nickname varchar not null,

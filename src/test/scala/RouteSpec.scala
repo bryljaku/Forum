@@ -30,6 +30,9 @@ class RouteSpec
 
   for (i <- 1 to 4)
     waitForIt(db.run(answersRepository.addAnswer(Answer.from(answerValid, topicId))))
+
+
+
   "topics" should "respond with status OK when adding valid topic" in {
     Post("/topics", topicEntity(topicValid)) ~> Route.seal(route) ~> check {
       status shouldBe OK
@@ -37,7 +40,7 @@ class RouteSpec
   }
 
   "topics" should "respond with status BadRequest when adding invalid topic" in {
-    Post("/topics").withEntity(topicEntity(topicInvalid)) ~> Route.seal(route) ~> check {
+    Post("/topics", topicEntity(topicInvalid)) ~> Route.seal(route) ~> check {
       status shouldBe BadRequest
     }
   }
@@ -47,26 +50,23 @@ class RouteSpec
     }
   }
   "topics" should "respond with 404 Error when getting topic which does not exist" in {
-    Get("/topics/1234575") ~> route ~> check {
+    Get(s"/topics/$wrongUUID") ~> route ~> check {
       status shouldBe NotFound
     }
   }
 
   "topics" should "respond with status OK when updating topic" in {
-    Put(s"/topics/$topicId", updateEntity(
-      updateRequestValid(topicId, topicSecret))) ~> route ~> check {
+    Put(s"/topics/$topicId", updateEntity(updateRequestValid(topicId, topicSecret))) ~> route ~> check {
       status shouldBe OK
     }
   }
   "topics" should "respond with status Unauthorized when updating topic with wrong secret" in {
-    Put(s"/topics/$topicId").withEntity(
-      updateEntity(updateRequestValid(topicId, Secret(1)))) ~> route ~> check {
+    Put(s"/topics/$topicId", updateEntity(updateRequestValid(topicId, Secret(1)))) ~> route ~> check {
       status shouldBe BadRequest
     }
   }
   "answers" should "respond status OK when adding valid answer" in {
-    Post(s"/topics/${topicId}/answers")
-      .withEntity(answerEntity(answerValid)) ~> route ~> check {
+    Post(s"/topics/${topicId}/answers", answerEntity(answerValid)) ~> route ~> check {
       status shouldBe OK
     }
   }
@@ -109,14 +109,12 @@ class RouteSpec
   }
 
   "topics" should "respond with status Unauthorized when deleting topic with wrong secret" in {
-    Delete(s"/topics/$topicId").withEntity(
-      deleteEntity(deleteRequest(topicId, Secret(1)))) ~> route ~> check {
+    Delete(s"/topics/$topicId", deleteEntity(deleteRequest(topicId, Secret(1)))) ~> route ~> check {
       status shouldBe BadRequest
     }
   }
   "topics" should "respond with status OK when deleting topic" in {
-    Delete(s"/topics/$topicId").withEntity(
-      deleteEntity(deleteRequest(topicId, topicSecret))) ~> route ~> check {
+    Delete(s"/topics/$topicId", deleteEntity(deleteRequest(topicId, topicSecret))) ~> route ~> check {
       status shouldBe OK
     }
   }

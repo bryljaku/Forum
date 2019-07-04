@@ -59,5 +59,5 @@ class InitializeService(db: Database, topicsRepository: TopicsRepository, answer
 
   def addTopics: Seq[Topic] =
     for (i <- 0 to 10)
-      yield Topic.from(TopicInput(Nickname("topicNick" + i), Mail("topicMail" + i + "@e.o"), TopicName("Tooopic"), Content("Did you..")))
+      yield Topic.from(TopicInput(Nickname("topicNick" + i), Mail("topicMail" + i + "@e.do"), TopicName("Tooopic"), Content("Did you..")))
 }

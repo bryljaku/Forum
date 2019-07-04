@@ -28,6 +28,8 @@ object RouteSpecHelper extends ScalaFutures with Protocols {
     val routes = new Routes(db, topicsService, answersService)
     val route = routes.route
 
+    val wrongUUID = "123e4567-1111-1111-1111-426655440000"
+
     val topicValid = TopicInput(Nickname("nickname"), Mail("mail@St.ring"), TopicName("topic: String"), Content("content: String"))
     val topicInvalid = TopicInput(Nickname("nickname"), Mail("mailSt.ring"), TopicName("topic: String"), Content("content: String"))
     def answerValid = AnswerInput(Nickname("nickname"), Mail("mail@Str.ing"), Content("content: String"))
@@ -37,7 +39,7 @@ object RouteSpecHelper extends ScalaFutures with Protocols {
     def deleteRequest(id: Id, secret: Secret) = DeleteRequest(id, secret)
 
     def topicEntity(topicInput: TopicInput) = Marshal(topicInput).to[MessageEntity].futureValue
-    def answerEntity(answerInput: AnswerInput) = Marshal(answerInput).to[MessageEntity].futureValue  
+    def answerEntity(answerInput: AnswerInput) = Marshal(answerInput).to[MessageEntity].futureValue
     def updateEntity(updateRequest: UpdateRequest) = Marshal(updateRequest).to[MessageEntity].futureValue
     def deleteEntity(deleteRequest: DeleteRequest) = Marshal(deleteRequest).to[MessageEntity].futureValue  
     
