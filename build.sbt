@@ -10,13 +10,11 @@ val scalaTestVersion = "3.0.7"
 val slickVersion = "3.2.2"
 val sprayVersion = "1.3.4"
 libraryDependencies ++= Seq(
-  "org.slf4j" % "slf4j-simple" % "latest.integration",
   // slick
   "com.typesafe.slick" %% "slick" % slickVersion,
   "com.typesafe.slick" %% "slick-hikaricp" % slickVersion,
   // akka
   "com.typesafe.akka" % "akka-actor_2.12" % akkaVersion ,
-  "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
   "com.typesafe.akka" %% "akka-contrib" % akkaVersion,
   "com.typesafe.akka" %% "akka-http-core" % akkaHttpVersion,
   "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
@@ -28,7 +26,6 @@ libraryDependencies ++= Seq(
   // spray
   "io.spray" %% "spray-json" % sprayVersion,
   // database
-  "com.h2database" % "h2" % "latest.integration",
   "org.postgresql" % "postgresql" % "latest.integration",
   // kebs
   "pl.iterators" %% "kebs-akka-http" % "1.6.2",

@@ -14707,7 +14707,6 @@
 [0m[[0m[0mdebug[0m] [0m[0m	[NOT REQUIRED] org.scala-sbt#completion_2.12;1.2.8!completion_2.12.jar[0m
 [0m[[0m[0mdebug[0m] [0m[0m	[NOT REQUIRED] org.scala-sbt#task-system_2.12;1.2.8!task-system_2.12.jar[0m
 [0m[[0m[0mdebug[0m] [0m[0m	[NOT REQUIRED] org.scala-sbt#tasks_2.12;1.2.8!tasks_2.12.jar[0m
-[0m[[0m[0mdebug[0m] [0m[0m	[NOT REQUIRED] org.scala-sbt#testing_2.12;1.2.8!testing_2.12.jar[0m
 [0m[[0m[0mdebug[0m] [0m[0m	[NOT REQUIRED] org.scala-sbt#util-tracking_2.12;1.2.4!util-tracking_2.12.jar[0m
 [0m[[0m[0mdebug[0m] [0m[0m	[NOT REQUIRED] org.scala-sbt#zinc-classpath_2.12;1.2.5!zinc-classpath_2.12.jar[0m
 [0m[[0m[0mdebug[0m] [0m[0m	[NOT REQUIRED] org.scala-sbt#zinc-apiinfo_2.12;1.2.5!zinc-apiinfo_2.12.jar[0m
@@ -14728,7 +14727,6 @@
 [0m[[0m[0mdebug[0m] [0m[0m	[NOT REQUIRED] org.scala-sbt#compiler-bridge_2.12;1.2.5!compiler-bridge_2.12.jar[0m
 [0m[[0m[0mdebug[0m] [0m[0m	[NOT REQUIRED] org.scala-sbt#zinc-classfile_2.12;1.2.5!zinc-classfile_2.12.jar[0m
 [0m[[0m[0mdebug[0m] [0m[0m	[NOT REQUIRED] com.jcraft#jsch;0.1.54!jsch.jar[0m
-[0m[[0m[0mdebug[0m] [0m[0m	[NOT REQUIRED] com.eed3si9n#gigahorse-okhttp_2.12;0.3.0!gigahorse-okhttp_2.12.jar[0m
 [0m[[0m[0mdebug[0m] [0m[0m	[NOT REQUIRED] com.squareup.okhttp3#okhttp-urlconnection;3.7.0!okhttp-urlconnection.jar[0m
 [0m[[0m[0mdebug[0m] [0m[0m	[NOT REQUIRED] com.eed3si9n#gigahorse-core_2.12;0.3.0!gigahorse-core_2.12.jar[0m
 [0m[[0m[0mdebug[0m] [0m[0m	[NOT REQUIRED] com.squareup.okhttp3#okhttp;3.7.0!okhttp.jar[0m
@@ -14756,7 +14754,9 @@
 [0m[[0m[0mdebug[0m] [0m[0m	[NOT REQUIRED] com.github.cb372#scalacache-core_2.12;0.20.0!scalacache-core_2.12.jar[0m
 [0m[[0m[0mdebug[0m] [0m[0m	[NOT REQUIRED] com.github.ben-manes.caffeine#caffeine;2.5.6!caffeine.jar[0m
 [0m[[0m[0mdebug[0m] [0m[0m	[NOT REQUIRED] org.scala-sbt.ivy#ivy;2.3.0-sbt-cb9cc189e9f3af519f9f102e6c5d446488ff6832!ivy.jar[0m
-[0m[[0m[0mdebug[0m] [0m[0m:: resolution report :: resolve 957ms :: artifacts dl 25ms[0m
+[0m[[0m[0mdebug[0m] [0m[0m	[NOT REQUIRED] com.eed3si9n#gigahorse-okhttp_2.12;0.3.0!gigahorse-okhttp_2.12.jar[0m
+[0m[[0m[0mdebug[0m] [0m[0m	[NOT REQUIRED] org.scala-sbt#testing_2.12;1.2.8!testing_2.12.jar[0m
+[0m[[0m[0mdebug[0m] [0m[0m:: resolution report :: resolve 841ms :: artifacts dl 17ms[0m
 [0m[[0m[0mdebug[0m] [0m[0m	report for default#forum-build;0.1.0-SNAPSHOT compile produced in /home/oem/IdeaProjects/Forum/project/target/scala-2.12/sbt-1.0/resolution-cache/reports/default-forum-build-compile.xml[0m
 [0m[[0m[0mdebug[0m] [0m[0m	report for default#forum-build;0.1.0-SNAPSHOT runtime produced in /home/oem/IdeaProjects/Forum/project/target/scala-2.12/sbt-1.0/resolution-cache/reports/default-forum-build-runtime.xml[0m
 [0m[[0m[0mdebug[0m] [0m[0m	report for default#forum-build;0.1.0-SNAPSHOT test produced in /home/oem/IdeaProjects/Forum/project/target/scala-2.12/sbt-1.0/resolution-cache/reports/default-forum-build-test.xml[0m
@@ -14768,5 +14768,5 @@
 [0m[[0m[0mdebug[0m] [0m[0m	report for default#forum-build;0.1.0-SNAPSHOT plugin produced in /home/oem/IdeaProjects/Forum/project/target/scala-2.12/sbt-1.0/resolution-cache/reports/default-forum-build-plugin.xml[0m
 [0m[[0m[0mdebug[0m] [0m[0m	report for default#forum-build;0.1.0-SNAPSHOT pom produced in /home/oem/IdeaProjects/Forum/project/target/scala-2.12/sbt-1.0/resolution-cache/reports/default-forum-build-pom.xml[0m
 [0m[[0m[0mdebug[0m] [0m[0m	report for default#forum-build;0.1.0-SNAPSHOT scala-tool produced in /home/oem/IdeaProjects/Forum/project/target/scala-2.12/sbt-1.0/resolution-cache/reports/default-forum-build-scala-tool.xml[0m
-[0m[[0m[0mdebug[0m] [0m[0m	resolve done (957ms resolve - 25ms download)[0m
+[0m[[0m[0mdebug[0m] [0m[0m	resolve done (841ms resolve - 17ms download)[0m
 [0m[[0m[0minfo[0m] [0m[0mDone updating.[0m

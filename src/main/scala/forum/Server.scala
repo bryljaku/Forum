@@ -5,6 +5,7 @@ import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
 import com.typesafe.config.ConfigFactory
 import slick.jdbc.H2Profile.api.Database
+//import org.flywaydb.core.Flyway
 import scala.io.StdIn.readLine
 import forum.services.{TopicsService, AnswersService}
 import forum.repositories.{TopicsRepository, AnswersRepository}
@@ -12,7 +13,9 @@ import forum.routes.Routes
 
 object Server extends App {
 
-
+//  val flyway = new Flyway
+//  flyway.setDataSource(config.getString("postgres.properties.url"), config.getString("postgres.user"), config.getString("postgres.properties.password"))
+//  flyway.migrate()
   val db: Database = Database.forConfig("postgres")
 
   implicit val system: ActorSystem = ActorSystem("Forum")
