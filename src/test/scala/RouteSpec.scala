@@ -15,12 +15,11 @@ class RouteSpec
     with Protocols
    {
 
-
   "Service" should {
     "topics" should {
       "respond with status OK when adding valid topic" in {
         Post("/topics").withEntity(topicEntity(topicValid)) ~> Route.seal(route) ~> check {
-          status shouldBe Created
+          status shouldBe OK
         }
       }
       "respond with status BadRequest when adding invalid topic" in {
@@ -51,13 +50,13 @@ class RouteSpec
         "respond with status Unauthorized when updating topic with wrong secret" in {
           Put(s"/topics/$topicId").withEntity(
             updateEntity(updateRequestValid(topicId, Secret(1)))) ~> route ~> check {
-            status shouldBe Unauthorized
+            status shouldBe BadRequest
           }
         }
         "respond with status Unauthorized when deleting topic with wrong secret" in {
           Delete(s"/topics/$topicId").withEntity(
             deleteEntity(deleteRequest(topicId, Secret(1)))) ~> route ~> check {
-            status shouldBe Unauthorized
+            status shouldBe BadRequest
           }
         }
         "respond with status OK when deleting topic" in {
@@ -113,13 +112,13 @@ class RouteSpec
           "respond with status Unauthorized when updating answer with wrong secret" in {
             Delete(s"/topics/$topicId/answers").withEntity(updateEntity(
               updateRequestValid(answerId, Secret(1)))) ~> route ~> check {
-              status shouldBe Unauthorized
+              status shouldBe BadRequest
             }
           }
           "respond with status Unauthorized when deleting answer with wrong secret" in {
             Delete(s"/topics/$topicId/answers").withEntity(
               deleteEntity(deleteRequest(answerId, Secret(1)))) ~> route ~> check {
-              status shouldBe Unauthorized
+              status shouldBe BadRequest
           }
           }
           "respond with status OK when deleting answer" in {
