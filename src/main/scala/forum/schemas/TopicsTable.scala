@@ -20,7 +20,7 @@ class TopicsTable(tag: Tag) extends Table[Topic](tag, "topics") {
 
   def content: Rep[Content] = column[Content]("content")
 
-  def lastActivity: Rep[Timestamp] = column[Timestamp]("lastActivity")
+  def lastActivity: Rep[Timestamp] = column[Timestamp]("last_activity")
 
   def secret: Rep[Secret] = column[Secret]("secret")
 

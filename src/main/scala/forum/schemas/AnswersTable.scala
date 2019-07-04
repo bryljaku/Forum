@@ -15,11 +15,11 @@ class AnswersTable(tag: Tag) extends Table[Answer](tag, "answers") with Kebs {
 
   def mail: Rep[Mail] = column[Mail]("mail")
 
-  def topicID: Rep[Id] = column[Id]("topicID")
+  def topicID: Rep[Id] = column[Id]("topic_id")
 
   def content: Rep[Content] = column[Content]("content")
 
-  def lastActivity: Rep[Timestamp] = column[Timestamp]("lastActivity")
+  def lastActivity: Rep[Timestamp] = column[Timestamp]("last_activity")
 
 //  def topic: ForeignKeyQuery[TopicsTable, Topic] = foreignKey("topic_fk", topicID, TableQuery[TopicsTable])(_.id, onDelete = ForeignKeyAction.Cascade)
 
