@@ -17,9 +17,11 @@ class RouteSpec
     with Protocols {
 
   def waitForIt[A](f: Future[A]): A = Await.result(f, Duration.Inf)
+
   val topic = Topic.from(topicValid)
   val topicSecret = topic.secret
   val topicId = topic.id
+  val topicIdString = topicId.value.toString
   val to = topicId
   waitForIt(db.run(topicsRepository.addTopic(topic)))
 
@@ -56,67 +58,66 @@ class RouteSpec
   }
 
   "topics" should "respond with status OK when updating topic" in {
-    Put(s"/topics/$topicId", updateEntity(updateRequestValid(topicId, topicSecret))) ~> route ~> check {
+    Put(s"/topics/$topicIdString", updateEntity(updateRequestValid(topicId, topicSecret))) ~> route ~> check {
       status shouldBe OK
     }
   }
   "topics" should "respond with status Unauthorized when updating topic with wrong secret" in {
-    Put(s"/topics/$topicId", updateEntity(updateRequestValid(topicId, Secret(1)))) ~> route ~> check {
+    Put(s"/topics/$topicIdString", updateEntity(updateRequestValid(topicId, Secret(1)))) ~> route ~> check {
       status shouldBe BadRequest
     }
   }
   "answers" should "respond status OK when adding valid answer" in {
-    Post(s"/topics/${topicId}/answers", answerEntity(answerValid)) ~> route ~> check {
+    Post(s"/topics/${topicIdString}/answers", answerEntity(answerValid)) ~> route ~> check {
       status shouldBe OK
     }
   }
   "answers" should "respond with status BadRequest when adding invalid answer" in {
-    Post(s"/topics/${topicId}/answers", answerEntity(answerInvalid)) ~> route ~> check {
+    Post(s"/topics/${topicIdString}/answers", answerEntity(answerInvalid)) ~> route ~> check {
       status shouldBe BadRequest
     }
   }
 
   "answers" should "respond with status OK when getting answers" in
-    Get(s"/topics/$topicId/answers") ~> route ~> check {
+    Get(s"/topics/$topicIdString/answers") ~> route ~> check {
       status shouldBe OK
     }
   "answers" should "respond with correct pagination when getting answers with before > mid" in {
-    Get(s"/topics/$topicId/answers?mid=1&before=2&after=1") ~> route ~> check {
+    Get(s"/topics/$topicIdString/answers?mid=1&before=2&after=1") ~> route ~> check {
       responseAs[Seq[Answer]].length shouldBe 3
     }
   }
 
   "answers" should "respond with status OK when updating answer" in {
-    Put(s"/topics/$topicId/answers", updateEntity(updateRequestValid(answerId, answerSecret))) ~> route ~> check {
+    Put(s"/topics/$topicIdString/answers", updateEntity(updateRequestValid(answerId, answerSecret))) ~> route ~> check {
       status shouldBe OK
     }
 
   }
   "answers" should "respond with status Unauthorized when updating answer with wrong secret" in {
-    Delete(s"/topics/$topicId/answers", updateEntity(updateRequestValid(answerId, Secret(1)))) ~> route ~> check {
+    Delete(s"/topics/$topicIdString/answers", updateEntity(updateRequestValid(answerId, Secret(1)))) ~> route ~> check {
       status shouldBe BadRequest
     }
   }
   "answers" should "respond with status Unauthorized when deleting answer with wrong secret" in {
-    Delete(s"/topics/$topicId/answers", deleteEntity(deleteRequest(answerId, Secret(1)))) ~> route ~> check {
+    Delete(s"/topics/$topicIdString/answers", deleteEntity(deleteRequest(answerId, Secret(1)))) ~> route ~> check {
       status shouldBe BadRequest
     }
   }
   "answers" should "respond with status OK when deleting answer" in {
-    Delete(s"/topics/$topicId/answers", deleteEntity(deleteRequest(answerId, answerSecret))) ~> route ~> check {
+    Delete(s"/topics/$topicIdString/answers", deleteEntity(deleteRequest(answerId, answerSecret))) ~> route ~> check {
       status shouldBe OK
     }
   }
 
   "topics" should "respond with status Unauthorized when deleting topic with wrong secret" in {
-    Delete(s"/topics/$topicId", deleteEntity(deleteRequest(topicId, Secret(1)))) ~> route ~> check {
+    Delete(s"/topics/$topicIdString", deleteEntity(deleteRequest(topicId, Secret(1)))) ~> route ~> check {
       status shouldBe BadRequest
     }
   }
   "topics" should "respond with status OK when deleting topic" in {
-    Delete(s"/topics/$topicId", deleteEntity(deleteRequest(topicId, topicSecret))) ~> route ~> check {
+    Delete(s"/topics/$topicIdString", deleteEntity(deleteRequest(topicId, topicSecret))) ~> route ~> check {
       status shouldBe OK
     }
   }
-
 }
