@@ -1,14 +1,14 @@
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model._
 import com.typesafe.config.ConfigFactory
-import forum.Server.{db, materializer}
 import akka.http.scaladsl.unmarshalling.Unmarshal
 
 import scala.concurrent._
 import org.scalatest.concurrent.ScalaFutures
 import akka.http.scaladsl.marshalling.Marshal
 import forum.models.{AnswerInput, Content, CreatedResponse, DeleteRequest, Id, Mail, Nickname, Protocols, Secret, TopicInput, TopicName, UpdateRequest}
-
+import slick.jdbc.H2Profile.api.Database
+import forum.Server.materializer
 import ExecutionContext.Implicits.global
 import forum.repositories.{AnswersRepository, TopicsRepository}
 import forum.routes.Routes
@@ -20,6 +20,7 @@ object RouteSpecHelper extends ScalaFutures with Protocols {
     val config = ConfigFactory.load()
     val url = s"http://${config.getString("app.interface")}:${config.getInt("app.port")}"
 
+    val db: Database = Database.forConfig("postgres")
     val answersRepository = new AnswersRepository
     val topicsRepository = new TopicsRepository
     val topicsService = new TopicsService(db, topicsRepository)

@@ -9,10 +9,10 @@ val akkaHttpVersion = "10.1.1"
 val scalaTestVersion = "3.0.7"
 val slickVersion = "3.2.2"
 val sprayVersion = "1.3.4"
+val kebsVersion = "1.6.2"
 libraryDependencies ++= Seq(
   // slick
   "com.typesafe.slick" %% "slick" % slickVersion,
-  "com.typesafe.slick" %% "slick-hikaricp" % slickVersion,
   // akka
   "com.typesafe.akka" % "akka-actor_2.12" % akkaVersion ,
   "com.typesafe.akka" %% "akka-contrib" % akkaVersion,
@@ -28,9 +28,9 @@ libraryDependencies ++= Seq(
   // database
   "org.postgresql" % "postgresql" % "latest.integration",
   // kebs
-  "pl.iterators" %% "kebs-akka-http" % "1.6.2",
-  "pl.iterators" %% "kebs-spray-json" % "1.6.2",
-  "pl.iterators" %% "kebs-slick" % "1.6.2"
+  "pl.iterators" %% "kebs-akka-http" % kebsVersion,
+  "pl.iterators" %% "kebs-spray-json" % kebsVersion,
+  "pl.iterators" %% "kebs-slick" % kebsVersion
 )
 
 scalacOptions ++= Seq("-deprecation", "-feature")
